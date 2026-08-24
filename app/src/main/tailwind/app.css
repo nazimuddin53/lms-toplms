@@ -1,0 +1,14 @@
+/*
+ * Tailwind CSS v4 input.
+ *
+ *   @import "tailwindcss"   pulls in the framework (preflight + utility engine).
+ *   @source                 tells v4 which files to scan for class names so the
+ *                           output only contains classes you actually use. Paths
+ *                           are relative to this file (src/main/tailwind/).
+ *
+ * Add your own custom classes/layers below with @layer components { ... } etc.
+ */
+@import "tailwindcss";
+
+@source "../resources/templates/**/*.html";
+@source "../resources/static/js/**/*.js";

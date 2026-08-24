@@ -1,0 +1,33 @@
+server:
+  host: localhost
+  port: 8086
+  forward-headers-strategy: native
+
+spring:
+  mvc:
+    redirect-context-relative: true
+  application:
+    name: toplms
+  datasource:
+    url: jdbc:postgresql://localhost:5432/toplms_db
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+app:
+  host: "${server.host}"
+  port: "${server.port}"
+  baseUrl: "http://${server.host}:${server.port}"
+  email: admin@gmail.com
+  password: 123
+  secretKey: "toplms_secure_super_secret_key_production_ready_2026"
+demo:
+  companyName: "demo academy"
+  subdomain: demo # e.g. "demo" -> becomes demo.localhost
+  planId: "GROWTH"
+  name: admin
+  adminEmail: demo@gmail.com
+  adminPassword: 123

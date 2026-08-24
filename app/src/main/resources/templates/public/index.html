@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${appName} + ' — Multi-tenant LMS for your business'">toplms — Multi-tenant LMS</title>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+</head>
+<body>
+
+    <main layout:fragment="content">
+
+        <!-- ===== Hero ===== -->
+        <section class="hero">
+            <div class="container">
+                <span class="badge">Multi-tenant SaaS · Built on Spring Boot</span>
+                <h1>Launch your own <span class="grad">online academy</span></h1>
+                <p class="lede">
+                    <span th:text="${appName}">toplms</span> gives every business its own isolated,
+                    branded learning platform — courses, learners and AI-powered tutoring,
+                    live in under a minute.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary btn-lg" href="#how">See how it works</a>
+                    <a class="btn btn-ghost btn-lg" href="#features">Explore features</a>
+                </div>
+                <p class="hero-note">No credit card required · Free to start</p>
+            </div>
+        </section>
+
+        <!-- ===== Features ===== -->
+        <section class="section" id="features">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">Everything you need</div>
+                    <h2>One platform to run your training business</h2>
+                    <p>From tenant isolation to AI tutoring — the building blocks of a modern LMS, ready out of the box.</p>
+                </div>
+                <div class="features">
+                    <article class="feature">
+                        <div class="icon">🏢</div>
+                        <h3>Isolated workspaces</h3>
+                        <p>Every business is a separate tenant. Your data stays yours — cleanly partitioned from everyone else's.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">📚</div>
+                        <h3>Course management</h3>
+                        <p>Build courses, lessons and assessments with a structure that fits how you teach.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">🎓</div>
+                        <h3>Learner enrollment</h3>
+                        <p>Invite learners, manage enrollments and track progress through every course.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">🤖</div>
+                        <h3>AI tutoring</h3>
+                        <p>Claude-powered tutoring and automatic quiz generation, scoped and billed per tenant.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">🔒</div>
+                        <h3>Secure by default</h3>
+                        <p>BCrypt-hashed credentials and per-tenant access control built in from day one.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">⚡</div>
+                        <h3>Instant setup</h3>
+                        <p>Pick a name and a URL — your workspace is provisioned and live immediately.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== How it works ===== -->
+        <section class="section alt" id="how">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">How it works</div>
+                    <h2>From signup to teaching in three steps</h2>
+                </div>
+                <div class="steps">
+                    <article class="step feature">
+                        <div class="num">1</div>
+                        <h3>Create your workspace</h3>
+                        <p>Choose your business name and a URL like <code>toplms.app/acme</code>. You're live instantly.</p>
+                    </article>
+                    <article class="step feature">
+                        <div class="num">2</div>
+                        <h3>Add your content</h3>
+                        <p>Upload courses, invite instructors, and enroll your first learners.</p>
+                    </article>
+                    <article class="step feature">
+                        <div class="num">3</div>
+                        <h3>Start teaching</h3>
+                        <p>Learners sign in to your branded portal and start learning — with AI help on hand.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Closing CTA ===== -->
+        <section class="pricing-section py-5" id="pricing">
+            <div class="container">
+                <div class="text-center w-full mx-auto !mb-16 text-white !my-11 ">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Simple, Transparent Pricing
+                    </h2>
+                    <p class="mt-4 text-xl text-slate-600">
+                        Choose the perfect tier to launch your independent learning academy instantly.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch justify-center max-w-5xl mx-auto  !my-8">
+
+                    <div th:each="plan : ${plans}"
+                         class="bg-white rounded-2xl border border-slate-200 !p-8 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative">
+
+                        <div th:if="${plan.id == 'GROWTH'}"
+                             class="absolute !-top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white !px-4 !py-2 rounded-full text-xs font-semibold uppercase tracking-wider shadow-sm">
+                            Most Popular
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between !mb-4">
+                                <h3 class="text-xl font-bold text-slate-900" th:text="${plan.name}">Growth Tier</h3>
+                                <span class="text-xs font-mono font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded" th:text="${plan.id}">GROWTH</span>
+                            </div>
+
+                            <div class="my-6 flex items-baseline text-slate-900">
+                        <span class="text-5xl font-extrabold tracking-tight"
+                              th:text="${plan.priceJSON != null && plan.priceJSON.containsKey('USD')} ? '$' + ${#numbers.formatDecimal(plan.priceJSON['USD'], 0, 0)} : '$0'">
+                            $49
+                        </span>
+                                <span class="ml-1 text-xl font-medium text-slate-500">/mo</span>
+                            </div>
+
+                            <hr class="border-slate-100 my-6" />
+
+                            <ul class="space-y-4 text-sm text-slate-600 !my-8">
+                                <li class="flex items-center justify-between bg-slate-50 !p-3 rounded-lg">
+                                    <span class="font-medium text-slate-700">Course Limit:</span>
+                                    <span class="font-bold text-slate-900"
+                                          th:text="${plan.maxCourses == -1} ? 'Unlimited' : ${plan.maxCourses}">5</span>
+                                </li>
+                                <li class="flex items-center justify-between bg-slate-50 !p-3 rounded-lg">
+                                    <span class="font-medium text-slate-700">Student Capacity:</span>
+                                    <span class="font-bold text-slate-900"
+                                          th:text="${plan.maxStudents == -1} ? 'Unlimited' : ${plan.maxStudents}">500</span>
+                                </li>
+
+                                <li th:each="entry : ${plan.modulesJSON}" class="flex items-start gap-3 pt-2 !p-3">
+                                    <svg th:if="${entry.value}" class="h-5 w-5 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                    <svg th:if="${!entry.value}" class="h-5 w-5 text-slate-300 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    <span th:text="${#strings.capitalizeWords(#strings.replace(entry.key, '_', ' '))}"
+                                          th:classappend="${!entry.value} ? 'text-slate-400 line-through' : 'text-slate-700'">
+                                Feature Name
+                            </span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-auto pt-4">
+                            <a th:href="@{/register(planId=${plan.id})}"
+                               th:class="${plan.id == 'GROWTH'}
+                                 ? 'block text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl transition duration-150 shadow-sm'
+                                 : 'block text-center bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 px-4 rounded-xl transition duration-150 shadow-sm'"
+                               class="font-medium">
+                                Get Started
+                            </a>
+                        </div>
+
+                    </div> </div>
+            </div>
+        </section>
+        <section class="cta-band bg-light py-5" id="explore">
+            <div class="container text-center">
+                <div class="cta-card">
+                    <h2>Ready to launch your academy?</h2>
+                    <p th:text="'Start free on ' + ${appName} + '! No credit card, no setup fees.'">Start free today.</p>
+                    <a class="btn btn-outline-primary btn-lg" href="#pricing">Explore the platform</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+</body>
+</html>

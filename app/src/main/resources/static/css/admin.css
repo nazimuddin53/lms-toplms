@@ -1,0 +1,126 @@
+/* ==========================================================================
+   toplms admin area  →  /css/admin.css
+   Sidebar layout shared by every /app/admin/* page.
+   ========================================================================== */
+
+:root {
+    --bg: #0d0b20;
+    --sidebar-bg: #14122e;
+    --accent: #818cf8;
+    --accent-strong: #6366f1;
+    --card: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.10);
+    --text: #f8fafc;
+    --text-muted: #c7d2fe;
+    --text-dim: rgba(199, 210, 254, 0.6);
+    --error: #fca5a5;
+    --error-bg: rgba(252, 165, 165, 0.1);
+    --ok: #6ee7b7;
+    --ok-bg: rgba(110, 231, 183, 0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+}
+
+.layout { display: flex; min-height: 100vh; }
+
+/* --- sidebar --------------------------------------------------------------- */
+.sidebar {
+    width: 240px;
+    flex: none;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--card-border);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar .brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; padding: 0 .5rem 1.5rem; }
+.sidebar .brand .mark {
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #fff; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+}
+.sidebar nav { display: flex; flex-direction: column; gap: .25rem; }
+.nav-item {
+    display: block; padding: .6rem .75rem; border-radius: 9px;
+    color: var(--text-muted); text-decoration: none; font-size: .92rem;
+    transition: background .15s ease, color .15s ease;
+}
+.nav-item:hover { background: rgba(255, 255, 255, .05); color: var(--text); }
+.nav-item.active { background: rgba(129, 140, 248, .16); color: var(--text); border: 1px solid rgba(129, 140, 248, .3); }
+.sidebar .spacer { flex: 1; }
+.logout-form button {
+    width: 100%; padding: .6rem .75rem; font-size: .9rem; font-family: inherit;
+    color: var(--text-muted); background: transparent;
+    border: 1px solid var(--card-border); border-radius: 9px; cursor: pointer;
+}
+.logout-form button:hover { color: var(--text); background: rgba(255, 255, 255, .05); }
+
+/* --- content --------------------------------------------------------------- */
+.content { flex: 1; padding: 2rem 2.5rem 3rem; max-width: 1000px; }
+.page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; gap: 1rem; }
+.page-head h1 { font-size: 1.5rem; }
+.page-head .sub { color: var(--text-muted); font-size: .9rem; margin-top: .25rem; }
+
+/* --- buttons --------------------------------------------------------------- */
+.btn {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .6rem 1.1rem; font-size: .9rem; font-weight: 600; font-family: inherit;
+    border-radius: 9px; border: 1px solid transparent; cursor: pointer; text-decoration: none;
+    transition: transform .12s ease, background .15s ease;
+}
+.btn-primary { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-strong)); }
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-ghost { color: var(--text-muted); border-color: var(--card-border); background: transparent; }
+.btn-ghost:hover { color: var(--text); background: rgba(255, 255, 255, .05); }
+
+/* --- banners --------------------------------------------------------------- */
+.banner { padding: .75rem 1rem; border-radius: 10px; font-size: .88rem; margin-bottom: 1.5rem; }
+.banner.ok { color: var(--ok); background: var(--ok-bg); border: 1px solid rgba(110, 231, 183, .3); }
+
+/* --- stat cards ------------------------------------------------------------ */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat { padding: 1.25rem 1.4rem; background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; }
+.stat .label { font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+.stat .value { font-size: 1.8rem; font-weight: 800; margin-top: .35rem; }
+.stat .value.small { font-size: 1.05rem; font-weight: 600; font-family: ui-monospace, monospace; color: var(--accent); }
+
+/* --- panels & tables ------------------------------------------------------- */
+.panel { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; overflow: hidden; margin-bottom: 2rem; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: .8rem 1.1rem; font-size: .9rem; border-bottom: 1px solid var(--card-border); }
+th { font-size: .73rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-dim); background: rgba(255, 255, 255, .02); }
+tr:last-child td { border-bottom: none; }
+.pill {
+    display: inline-block; padding: .15rem .6rem; font-size: .75rem; font-weight: 600; border-radius: 999px;
+    color: var(--text-muted); background: rgba(255, 255, 255, .05); border: 1px solid var(--card-border);
+}
+.muted { color: var(--text-dim); }
+
+/* --- forms ----------------------------------------------------------------- */
+.form-card { max-width: 460px; padding: 1.75rem; background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; }
+label { display: block; margin-top: 1rem; margin-bottom: .3rem; font-size: .82rem; font-weight: 600; color: var(--text-muted); }
+input, select {
+    width: 100%; padding: .65rem .85rem; font-size: .95rem; color: var(--text); font-family: inherit;
+    background: rgba(255, 255, 255, .04); border: 1px solid var(--card-border); border-radius: 8px; outline: none;
+}
+input:focus, select:focus { border-color: var(--accent); }
+select option { background: var(--sidebar-bg); color: var(--text); }
+.error { display: block; margin-top: .3rem; font-size: .78rem; color: var(--error); }
+.form-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+
+/* --- responsive ------------------------------------------------------------ */
+@media (max-width: 720px) {
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; flex-direction: row; align-items: center; flex-wrap: wrap; gap: .5rem; padding: 1rem; }
+    .sidebar .brand { padding: 0 .5rem 0 0; }
+    .sidebar nav { flex-direction: row; flex-wrap: wrap; }
+    .sidebar .spacer { display: none; }
+    .logout-form { margin-left: auto; }
+    .content { padding: 1.5rem; }
+}

@@ -1,0 +1,132 @@
+// app — the Spring Boot entrypoint, and the ONLY bootable module. It holds the
+// @SpringBootApplication class and applies the org.springframework.boot plugin,
+// which repackages the jar into an executable fat jar (`bootJar` / `bootRun`).
+//
+// The plugin is applied by id with no version — the version is pinned once in
+// the root build.gradle. Toolchain, repositories and the Spring Boot BOM also
+// come from the root's `subprojects { }` block.
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+description = 'app — Spring Boot entrypoint, wires the engine and feature modules together'
+
+dependencies {
+    // Project dependency: Gradle builds :engine first and puts it on app's
+    // classpath. This is the line that actually links the two modules together.
+    // engine's `api` dependencies (e.g. Spring Data JPA) come through with it.
+    implementation project(':engine')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    // Thymeleaf: server-side HTML templating. A @Controller returns a view name
+    // (e.g. "index"), and Thymeleaf renders templates/<name>.html with model data.
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Bean Validation: the jakarta.validation.constraints annotations (@NotBlank,
+    // @Email, @Size, @Pattern …) and @Valid used by the web forms/controllers in
+    // this module. The starter bundles the API plus Hibernate Validator (the
+    // implementation). With it present, @Valid on a @Controller method argument
+    // makes Spring run the constraints and reject bad input before your code runs.
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.ai:spring-ai-starter-model-anthropic'
+
+    // The concrete JDBC driver belongs in the bootable module, not in engine:
+    // engine only needs the JPA API, app supplies the real database driver.
+    runtimeOnly 'org.postgresql:postgresql'
+}
+
+// Spring AI ships its own BOM, imported here since only :app uses Spring AI today.
+// (The Spring Boot BOM is already imported for every module by the root build.)
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Tailwind CSS v4 — compiled by the standalone CLI (no Node toolchain).
+//
+// What this section does:
+//   1. Detects the host OS/arch and picks the matching Tailwind CLI binary name.
+//   2. `downloadTailwind`  — fetches the binary into build/tools/ once. Cached
+//                            between builds; only re-runs if the file is gone
+//                            (e.g. after `./gradlew clean`).
+//   3. `tailwindBuild`     — runs the CLI to compile src/main/tailwind/app.css
+//                            into build/resources/main/static/css/app.css.
+//                            Spring Boot serves anything under classpath:/static
+//                            so the file becomes available at /css/app.css.
+//   4. Hooks `tailwindBuild` after processResources so the compiled CSS lands
+//                            alongside the copied resources and ends up in the
+//                            fat jar.
+//
+// Dev workflow: `./gradlew tailwindWatch` in a second terminal recompiles on
+// every template/CSS change. Spring DevTools (if added later) would then
+// auto-reload the browser.
+// ---------------------------------------------------------------------------
+def tailwindBinaryName = {
+    def os = System.getProperty('os.name').toLowerCase()
+    def arch = System.getProperty('os.arch').toLowerCase()
+    def osPart = os.contains('mac') ? 'macos' : os.contains('win') ? 'windows' : 'linux'
+    def archPart = (arch.contains('aarch64') || arch.contains('arm64')) ? 'arm64' : 'x64'
+    def suffix = osPart == 'windows' ? '.exe' : ''
+    return "tailwindcss-${osPart}-${archPart}${suffix}"
+}()
+
+def tailwindBinary = layout.buildDirectory.file("tools/${tailwindBinaryName}").get().asFile
+def tailwindInput  = file('src/main/tailwind/app.css')
+def tailwindOutput = layout.buildDirectory.file('resources/main/static/css/app.css').get().asFile
+
+tasks.register('downloadTailwind') {
+    description = 'Downloads the Tailwind CSS standalone CLI binary for this OS/arch.'
+    group = 'tailwind'
+    outputs.file(tailwindBinary)
+    onlyIf { !tailwindBinary.exists() }
+    doLast {
+        tailwindBinary.parentFile.mkdirs()
+        def url = "https://github.com/tailwindlabs/tailwindcss/releases/download/${tailwindVersion}/${tailwindBinaryName}"
+        logger.lifecycle("Downloading Tailwind ${tailwindVersion} → ${tailwindBinary}")
+        new URL(url).withInputStream { input ->
+            tailwindBinary.withOutputStream { it << input }
+        }
+        tailwindBinary.setExecutable(true)
+    }
+}
+
+tasks.register('tailwindBuild', Exec) {
+    description = 'Compiles app.css with Tailwind, scanning templates for class names.'
+    group = 'tailwind'
+    dependsOn 'downloadTailwind', 'processResources'
+
+    // Up-to-date checks: re-run only when the input CSS or any template changes.
+    inputs.file(tailwindInput)
+    inputs.dir('src/main/resources/templates')
+    inputs.property('tailwindVersion', tailwindVersion)
+    outputs.file(tailwindOutput)
+
+    doFirst { tailwindOutput.parentFile.mkdirs() }
+
+    commandLine tailwindBinary.absolutePath,
+        '-i', tailwindInput.absolutePath,
+        '-o', tailwindOutput.absolutePath,
+        '--minify'
+}
+
+// classes → jar/bootJar chain depends on this so the fat jar includes app.css.
+tasks.named('classes').configure { dependsOn 'tailwindBuild' }
+
+tasks.register('tailwindWatch', Exec) {
+    description = 'Watches templates + app.css and recompiles on every change. Run in a second terminal alongside bootRun.'
+    group = 'tailwind'
+    dependsOn 'downloadTailwind'
+
+    doFirst { tailwindOutput.parentFile.mkdirs() }
+
+    commandLine tailwindBinary.absolutePath,
+        '-i', tailwindInput.absolutePath,
+        '-o', tailwindOutput.absolutePath,
+        '--watch'
+}

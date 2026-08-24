@@ -1,0 +1,57 @@
+// engine — the core library module. It is NOT bootable: no main() method, and
+// no org.springframework.boot plugin. It produces a plain jar that :app (and
+// future feature modules) depend on.
+//
+// `java-library` (rather than plain `java`) unlocks the `api` configuration:
+// dependencies declared with `api` are visible to modules that depend on engine,
+// while `implementation` dependencies stay private to engine.
+//
+// Toolchain, repositories, group/version, the Spring Boot BOM and the common
+// test setup all come from the root build.gradle's `subprojects { }` block.
+plugins {
+    id 'java-library'
+
+    id 'org.springframework.boot' // Inherits version 4.0.6 safely!
+//    id 'io.spring.dependency-management' // Inherits version 1.1.7 safely!
+
+}
+
+description = 'engine — core library: shared domain, tenant infrastructure, common services'
+
+dependencies {
+    // `api`, not `implementation`: engine will expose JPA entities and repositories
+    // as part of its public surface, so :app must see JPA on its classpath too.
+//    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // spring-security-crypto is the small, servlet-free crypto module (BCrypt etc.).
+    // The provisioning service needs the PasswordEncoder *type* to hash passwords;
+    // the bean instance is defined in app's SecurityConfig. `implementation` (not
+    // `api`) because PasswordEncoder is an internal collaborator, not part of
+    // engine's public API. Version comes from the Spring Boot BOM.
+    implementation 'org.springframework.security:spring-security-crypto'
+
+    // Jakarta Bean Validation API only — provides @NotBlank, @NotNull, @Email,
+    // … so engine's @ConfigurationProperties classes and (future) entities can
+    // declare constraints. The implementation (Hibernate Validator) is pulled
+    // in by :app via spring-boot-starter-validation — we don't need the full
+    // starter here, just the annotations to compile against. Version from BOM.
+    implementation 'jakarta.validation:jakarta.validation-api'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    runtimeOnly 'org.postgresql:postgresql'
+}

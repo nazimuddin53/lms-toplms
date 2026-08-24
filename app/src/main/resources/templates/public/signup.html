@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--
+  Signup form template.
+
+  Form binding cheatsheet:
+    th:object="${signupForm}"   – binds this form to the SignupForm DTO in the
+                                   model (the name "signupForm" matches
+                                   @ModelAttribute("signupForm") in the controller).
+    th:field="*{businessName}"  – shortcut that expands to id="businessName"
+                                   name="businessName" value="...current value..."
+                                   – so the form re-populates on validation error.
+    th:errors="*{businessName}" – emits the per-field validation error message
+                                   when BindingResult.hasErrors() is true for this field.
+    #fields.hasErrors(...)      – Thymeleaf helper to conditionally render the
+                                   error span only when there is an error.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up — toplms</title>
+    <style>
+        :root {
+            --bg-from: #1e1b4b; --bg-to: #312e81;
+            --accent: #818cf8; --accent-strong: #6366f1;
+            --card: rgba(255,255,255,.06); --card-border: rgba(255,255,255,.12);
+            --text: #f8fafc; --text-muted: #c7d2fe;
+            --error: #fca5a5; --error-bg: rgba(252,165,165,.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 2rem;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at 20% 20%, var(--bg-to), var(--bg-from));
+        }
+        .card {
+            width: 100%; max-width: 480px;
+            padding: 2.5rem 2.25rem;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 24px 60px rgba(0,0,0,.35);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+        .back-link:hover { color: var(--accent); }
+        h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+        .subtitle { color: var(--text-muted); margin-bottom: 1.75rem; font-size: 0.9rem; }
+        label {
+            display: block;
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        input {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            font-size: 0.95rem;
+            color: var(--text);
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color .15s ease;
+        }
+        input:focus { border-color: var(--accent); }
+        input.has-error {
+            border-color: var(--error);
+            background: var(--error-bg);
+        }
+        .slug-row { display: flex; align-items: stretch; }
+        .slug-row .prefix {
+            padding: 0.65rem 0.75rem;
+            background: rgba(255,255,255,.03);
+            border: 1px solid var(--card-border);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .slug-row input { border-radius: 0 8px 8px 0; }
+        .error {
+            display: block;
+            margin-top: 0.3rem;
+            font-size: 0.78rem;
+            color: var(--error);
+        }
+        button {
+            width: 100%;
+            margin-top: 1.75rem;
+            padding: 0.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform .12s ease, box-shadow .12s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px rgba(99,102,241,.5);
+        }
+        .meta {
+            margin-top: 1.25rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .meta a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+<main class="card">
+    <a class="back-link" th:href="@{/}">&larr; Back</a>
+    <h1>Create your workspace</h1>
+    <p class="subtitle">Spin up a fresh LMS for your business.</p>
+
+    <form th:action="@{/signup}" th:object="${signupForm}" method="post" novalidate>
+        <!-- CSRF token: required now that Spring Security is active, else POST → 403. -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <label for="businessName">Business name</label>
+        <input type="text" id="businessName" th:field="*{businessName}"
+               th:classappend="${#fields.hasErrors('businessName')} ? 'has-error' : ''"
+               placeholder="Acme Learning">
+        <span class="error" th:if="${#fields.hasErrors('businessName')}" th:errors="*{businessName}">err</span>
+
+        <label for="slug">Workspace URL</label>
+        <div class="slug-row">
+            <span class="prefix">toplms.app/</span>
+            <input type="text" id="slug" th:field="*{slug}"
+                   th:classappend="${#fields.hasErrors('slug')} ? 'has-error' : ''"
+                   placeholder="acme" autocomplete="off">
+        </div>
+        <span class="error" th:if="${#fields.hasErrors('slug')}" th:errors="*{slug}">err</span>
+
+        <label for="fullName">Your full name</label>
+        <input type="text" id="fullName" th:field="*{fullName}"
+               th:classappend="${#fields.hasErrors('fullName')} ? 'has-error' : ''"
+               placeholder="Jane Doe">
+        <span class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">err</span>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}"
+               th:classappend="${#fields.hasErrors('email')} ? 'has-error' : ''"
+               placeholder="jane@acme.com" autocomplete="email">
+        <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">err</span>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" th:field="*{password}"
+               th:classappend="${#fields.hasErrors('password')} ? 'has-error' : ''"
+               placeholder="At least 8 characters" autocomplete="new-password">
+        <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">err</span>
+
+        <button type="submit">Create workspace</button>
+    </form>
+
+    <p class="meta">Already have a workspace? <a th:href="@{/login}">Sign in</a></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${appName} + ' - Register Your Business'">toplms - Register Your Business</title>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+</head>
+<body>
+
+<main layout:fragment="content">
+    <div class="registration-container" style="max-width: 550px; margin: 3rem auto; padding: 2rem; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;">
+
+        <div class="registration-header" style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="font-size: 1.8rem; color: #1e293b; margin-bottom: 0.5rem;">Create Your LMS Workspace</h2>
+            <p style="color: #64748b; font-size: 0.95rem;">Launch your dedicated multi-tenant learning environment in seconds.</p>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+            <span th:text="${errorMessage}">This domain subdomain name is already taken!</span>
+        </div>
+
+        <form th:action="@{/register}" th:object="${registrationDto}" method="POST" autocomplete="off" class="text-black">
+
+            <div class="plan-selection-block" style="margin-bottom: 1.5rem;">
+
+                <th:block th:if="*{planId != null}">
+                    <input type="hidden" th:field="*{planId}" />
+                    <div class="plan-badge-container" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 0.75rem 1rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.85rem; color: #166534; font-weight: 600; text-transform: uppercase;">Selected Plan:</span>
+                        <span style="background: #15803d; color: #fff; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: bold;"
+                              th:text="${selectedPlanName != null} ? ${selectedPlanName} : 'TIER #' + *{planId}">
+                            STANDARD
+                        </span>
+                    </div>
+                </th:block>
+
+                <th:block th:if="*{planId == null}">
+                    <div class="form-group">
+                        <label for="planSelect" style="display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 0.35rem;">Select Subscription Plan</label>
+                        <select id="planSelect" th:field="*{planId}" required
+                                style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; background-color: #fff; box-sizing: border-box; accent-color: #2563eb;">
+                            <option value="" disabled selected>-- Choose a Plan Tier --</option>
+                            <option th:each="plan : ${availablePlans}"
+                                    th:value="${plan.id}"
+                                    th:text="${plan.priceJSON != null && plan.priceJSON.containsKey('USD')}
+                                     ? |${plan.name} ($${#numbers.formatDecimal(plan.priceJSON['USD'], 0, 0)})|
+                                     : |${plan.name} ($0)|">
+                                Basic ($29/mo)
+                            </option>
+                        </span>
+                        </select>
+                        <p th:if="${#fields.hasErrors('planId')}" th:errors="*{planId}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                    </div>
+                </th:block>
+
+            </div>
+
+            <fieldset style="border: none; padding: 0; margin: 0 0 1.5rem 0;">
+                <legend style="font-size: 1rem; font-weight: 600; color: #334155; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; width: 100%; padding-bottom: 0.25rem;">1. Administrator Profile</legend>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="name" style="display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.35rem;">Full Name</label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="John Doe" required
+                           style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;" />
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="adminEmail" style="display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.35rem;">Email Address</label>
+                    <input type="email" id="adminEmail" th:field="*{adminEmail}" placeholder="john@company.com" required
+                           style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;" />
+                    <p th:if="${#fields.hasErrors('adminEmail')}" th:errors="*{adminEmail}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="adminPassword" style="display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.35rem;">Password</label>
+                    <input type="password" id="adminPassword" th:field="*{adminPassword}" placeholder="••••••••" required
+                           style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;" />
+                    <p th:if="${#fields.hasErrors('adminPassword')}" th:errors="*{adminPassword}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                </div>
+            </fieldset>
+
+            <fieldset style="border: none; padding: 0; margin: 0 0 2rem 0;">
+                <legend style="font-size: 1rem; font-weight: 600; color: #334155; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; width: 100%; padding-bottom: 0.25rem;">2. Organization & Domain Context</legend>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="companyName" style="display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.35rem;">Organization / Academy Name</label>
+                    <input type="text" id="companyName" th:field="*{companyName}" placeholder="MIT Corporate Academy" required
+                           style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;" />
+                    <p th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="subdomain" style="display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.35rem;">Desired Subdomain Subpath Slug</label>
+                    <div style="display: flex; align-items: center; position: relative;">
+                        <input type="text" id="subdomain" th:field="*{subdomain}" placeholder="mit" required pattern="^[a-zA-Z0-9\-]+$" title="Only alphanumeric characters and hyphens are allowed."
+                               style="flex: 1; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-right: none; font-size: 0.95rem; box-sizing: border-box;" />
+                        <span style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #64748b; padding: 0.65rem 0.75rem; border-top-right-radius: 6px; border-bottom-right-radius: 6px; font-size: 0.95rem; user-select: none;">
+                            .localhost
+                        </span>
+                    </div>
+                    <small style="display: block; margin-top: 0.35rem; color: #94a3b8; font-size: 0.8rem;">This establishes your isolated database namespace partition.</small>
+                    <p th:if="${#fields.hasErrors('subdomain')}" th:errors="*{subdomain}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                </div>
+            </fieldset>
+            </fieldset>
+
+            <button type="submit" style="width: 100%; background: #2563eb; color: #fff; padding: 0.85rem; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s ease;"
+                    onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+                Provision Setup & Register
+            </button>
+
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #64748b;">
+                Already have a sub-tenant space?
+                <a th:href="@{/login}" style="color: #2563eb; text-decoration: none; font-weight: 500;">Sign In here</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

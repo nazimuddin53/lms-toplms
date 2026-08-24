@@ -1,0 +1,54 @@
+// Root project: a pure aggregator. It builds no code of its own — it only holds
+// configuration shared by every module, so each module's build.gradle stays small.
+//
+// Plugins are declared here with `apply false`: that puts them on the build
+// classpath for the whole build without applying them to the root project. Each
+// module then applies the ones it actually needs, by id and with no version.
+plugins {
+    id 'org.springframework.boot' version "${springBootVersion}" apply false
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}" apply false
+
+    id 'java'
+
+    // No versions needed here anymore! Gradle looks them up from settings.gradle
+//    id 'org.springframework.boot' apply false
+//    id 'io.spring.dependency-management' apply false
+}
+
+// `subprojects { }` runs this configuration block against every module
+// (engine, app, and any future plugins) — written once here instead of being
+// copy-pasted into each module's build file.
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = projectGroup
+    version = projectVersion
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    // Importing the Spring Boot BOM lets every module declare starters with no
+    // version number — the BOM decides the versions and keeps them aligned.
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}

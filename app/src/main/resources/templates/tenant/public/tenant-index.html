@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{tenant/layout/tenant-layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${appName} + ' — Multi-tenant LMS for your business'">toplms — Multi-tenant LMS</title>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+</head>
+<body>
+
+    <main layout:fragment="tenantContent">
+
+        <!-- ===== Hero ===== -->
+        <section class="hero">
+            <div class="container">
+                <span class="badge">Multi-tenant SaaS · Built on Spring Boot</span>
+                <h1>Launch your own <span class="grad">online academy</span></h1>
+                <p class="lede">
+                    <span th:text="${appName}">toplms</span> gives every business its own isolated,
+                    branded learning platform — courses, learners and AI-powered tutoring,
+                    live in under a minute.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary btn-lg" href="#how">See how it works</a>
+                    <a class="btn btn-ghost btn-lg" href="#features">Explore features</a>
+                </div>
+                <p class="hero-note">No credit card required · Free to start</p>
+            </div>
+        </section>
+
+        <!-- ===== Features ===== -->
+        <section class="section" id="features">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">Everything you need</div>
+                    <h2>One platform to run your training business</h2>
+                    <p>From tenant isolation to AI tutoring — the building blocks of a modern LMS, ready out of the box.</p>
+                </div>
+                <div class="features">
+                    <article class="feature">
+                        <div class="icon">🏢</div>
+                        <h3>Isolated workspaces</h3>
+                        <p>Every business is a separate tenant. Your data stays yours — cleanly partitioned from everyone else's.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">📚</div>
+                        <h3>Course management</h3>
+                        <p>Build courses, lessons and assessments with a structure that fits how you teach.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">🎓</div>
+                        <h3>Learner enrollment</h3>
+                        <p>Invite learners, manage enrollments and track progress through every course.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">🤖</div>
+                        <h3>AI tutoring</h3>
+                        <p>Claude-powered tutoring and automatic quiz generation, scoped and billed per tenant.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">🔒</div>
+                        <h3>Secure by default</h3>
+                        <p>BCrypt-hashed credentials and per-tenant access control built in from day one.</p>
+                    </article>
+                    <article class="feature">
+                        <div class="icon">⚡</div>
+                        <h3>Instant setup</h3>
+                        <p>Pick a name and a URL — your workspace is provisioned and live immediately.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== How it works ===== -->
+        <section class="section alt" id="how">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">How it works</div>
+                    <h2>From signup to teaching in three steps</h2>
+                </div>
+                <div class="steps">
+                    <article class="step feature">
+                        <div class="num">1</div>
+                        <h3>Create your workspace</h3>
+                        <p>Choose your business name and a URL like <code>toplms.app/acme</code>. You're live instantly.</p>
+                    </article>
+                    <article class="step feature">
+                        <div class="num">2</div>
+                        <h3>Add your content</h3>
+                        <p>Upload courses, invite instructors, and enroll your first learners.</p>
+                    </article>
+                    <article class="step feature">
+                        <div class="num">3</div>
+                        <h3>Start teaching</h3>
+                        <p>Learners sign in to your branded portal and start learning — with AI help on hand.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Closing CTA ===== -->
+        <section class="cta-band" id="pricing">
+            <div class="container">
+                <div class="cta-card">
+                    <h2>Ready to launch your academy?</h2>
+                    <p th:text="'Start free on ' + ${appName} + ' — no credit card, no setup fees.'">Start free today.</p>
+                    <a class="btn btn-primary btn-lg" href="#features">Explore the platform</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+</body>
+</html>

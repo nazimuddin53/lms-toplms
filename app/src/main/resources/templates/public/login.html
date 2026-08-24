@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{tenant/layout/tenant-layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${appName} + ' — Multi-tenant LMS for your business'">toplms — Multi-tenant LMS</title>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+</head>
+<body>
+
+<main layout:fragment="tenantContent">
+    <div class="registration-container" style="max-width: 550px; margin: 3rem auto; padding: 2rem; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;">
+
+        <div th:if="${errorMessage}" class="alert alert-danger" style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+            <span th:text="${errorMessage}">This domain subdomain name is already taken!</span>
+        </div>
+
+        <form th:action="@{/login}" th:object="${signInDto}" method="POST" autocomplete="off" class="text-black">
+
+            <fieldset style="border: none; padding: 0; margin: 0 0 1.5rem 0;">
+                <legend style="font-size: 1rem; font-weight: 600; color: #334155; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; width: 100%; padding-bottom: 0.25rem;"
+                th:text="${userType}">Profile</legend>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="email" style="display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.35rem;">Email Address</label>
+                    <input type="email" id="email" th:field="*{email}" placeholder="john@company.com" required
+                           style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;" />
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="password" style="display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.35rem;">Password</label>
+                    <input type="password" id="password" th:field="*{password}" placeholder="••••••••" required
+                           style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;" />
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: #dc2626; font-size: 0.8rem; margin: 0.25rem 0 0 0;"></p>
+                </div>
+            </fieldset>
+
+            <button type="submit" style="width: 100%; background: #2563eb; color: #fff; padding: 0.85rem; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s ease;"
+                    onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+                Sign In
+            </button>
+
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #64748b;">
+                Create a new account
+                <a th:href="@{/signup}" style="color: #2563eb; text-decoration: none; font-weight: 500;">Sign Up</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
