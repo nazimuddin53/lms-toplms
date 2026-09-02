@@ -12,3 +12,27 @@
 
 @source "../resources/templates/**/*.html";
 @source "../resources/static/js/**/*.js";
+
+/* TopLMS brand tokens. Existing utility class names remain unchanged so
+   Thymeleaf templates and dashboard behaviour do not need to change. */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+  --color-indigo-50: #E8FFF5;
+  --color-indigo-100: #D5FBE9;
+  --color-indigo-200: #A7E8C8;
+  --color-indigo-300: #76E9AE;
+  --color-indigo-400: #00D978;
+  --color-indigo-500: #00D978;
+  --color-indigo-600: #00BF69;
+  --color-indigo-700: #064E3B;
+  --color-indigo-800: #053C2F;
+  --color-indigo-900: #032D23;
+  --color-indigo-950: #021E18;
+  --color-violet-600: #064E3B;
+  --color-blue-600: #00BF69;
+  --color-blue-700: #064E3B;
+  --color-cyan-400: #00D978;
+  --color-cyan-500: #00D978;
+  --color-cyan-950: #E8FFF5;
+}

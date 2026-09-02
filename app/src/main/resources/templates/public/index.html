@@ -14,20 +14,44 @@
     <main layout:fragment="content">
 
         <!-- ===== Hero ===== -->
-        <section class="hero">
-            <div class="container">
+        <section class="hero" id="hero">
+            <div class="container hero-layout">
+                <div class="hero-copy">
                 <span class="badge">Multi-tenant SaaS · Built on Spring Boot</span>
-                <h1>Launch your own <span class="grad">online academy</span></h1>
+                <h1>Transform the Way You <span class="grad">Learn and Teach</span></h1>
                 <p class="lede">
-                    <span th:text="${appName}">toplms</span> gives every business its own isolated,
+                    <span th:text="${appName}">TopLMS</span> gives every business its own isolated,
                     branded learning platform — courses, learners and AI-powered tutoring,
                     live in under a minute.
                 </p>
                 <div class="hero-actions">
-                    <a class="btn btn-primary btn-lg" href="#how">See how it works</a>
-                    <a class="btn btn-ghost btn-lg" href="#features">Explore features</a>
+                    <a class="btn btn-primary btn-lg" th:href="@{/signup}">Get Started Free</a>
+                    <a class="btn btn-ghost btn-lg" href="#features">Explore Features</a>
                 </div>
                 <p class="hero-note">No credit card required · Free to start</p>
+                </div>
+                <div class="dashboard-preview hero-preview" aria-label="Presentation-only TopLMS dashboard preview">
+                    <div class="preview-top"><span class="preview-dot"></span><strong>Workspace overview</strong><span class="preview-status">Demo</span></div>
+                    <div class="preview-stats"><div><strong>24</strong><span>Courses</span></div><div><strong>312</strong><span>Learners</span></div><div><strong>18</strong><span>Instructors</span></div></div>
+                    <div class="preview-chart"><span class="chart-title">Course progress</span><div class="chart-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+                    <div class="preview-activity"><span>Recent activity</span><b>New learner enrolled</b><b>Certificate earned</b></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Trust / Stats ===== -->
+        <section class="trust-section trust-stats" id="trust-stats">
+            <div class="container">
+                <div class="trust-intro">
+                    <h2>Learning That Grows With You</h2>
+                    <p class="trust-statement">A smarter way for organizations, instructors and learners to grow together.</p>
+                </div>
+                <div class="trust-layout">
+                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">▦</span><div><strong>10+</strong><span>Organizations</span></div></article>
+                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">▤</span><div><strong>50+</strong><span>Courses</span></div></article>
+                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">♙</span><div><strong>500+</strong><span>Learners</span></div></article>
+                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">✦</span><div><strong>25+</strong><span>Instructors</span></div></article>
+                </div>
             </div>
         </section>
 

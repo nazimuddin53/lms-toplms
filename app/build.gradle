@@ -37,6 +37,9 @@ dependencies {
     // The concrete JDBC driver belongs in the bootable module, not in engine:
     // engine only needs the JPA API, app supplies the real database driver.
     runtimeOnly 'org.postgresql:postgresql'
+
+    // Keep the Spring context test independent of a locally configured PostgreSQL instance.
+    testRuntimeOnly 'com.h2database:h2'
 }
 
 // Spring AI ships its own BOM, imported here since only :app uses Spring AI today.

@@ -33,7 +33,7 @@ public class UserDataInitializer implements CommandLineRunner {
         try {
             Optional<Role> role = this.roleService.findByRoleName(String.valueOf(RoleEnum.SUPER_ADMIN));
             if (role.isEmpty()) {
-                log.error("Aborting tenant seeding: Role {} does not exist in the database.", role.get().getName());
+                log.error("Aborting admin user seeding: SUPER_ADMIN role does not exist in the database.");
                 return; // Stop execution before causing a database foreign-key crash
             }
             Optional<User> userOpt = this.userService.findByEmail(this.appHostProperties.getEmail());
