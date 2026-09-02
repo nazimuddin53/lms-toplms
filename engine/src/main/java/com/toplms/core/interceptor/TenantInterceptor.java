@@ -36,8 +36,11 @@ public class TenantInterceptor implements HandlerInterceptor {
         }
         String host = serverName.toLowerCase().trim();
 
-        // 1. Identify Root Domains (Main SaaS Platform Landing Pages
-        if ( host.equals("localhost") || host.equals("127.0.0.1") || host.equals("0:0:0:0:0:0:0:1")) {
+        // 1. Identify Root Domains (Main SaaS Platform Landing Pages)
+        // Matches localhost, loopback, and any external/cloud/tunnel domain
+        // that is NOT a registered tenant subdomain of localhost.
+        if ( host.equals("localhost") || host.equals("127.0.0.1") || host.equals("0:0:0:0:0:0:0:1")
+                || isExternalPlatformDomain(host)) {
             TenantContext.setCurrenPageType(LoadingPageType.MAIN);
             return true;
         }
@@ -80,6 +83,25 @@ public class TenantInterceptor implements HandlerInterceptor {
         // Return empty if no registered tenant owns this domain
         return Optional.empty();
     }
+    /**
+     * Returns true when the host is an external platform domain
+     * (tunnel, cloud hosting, or custom domain) rather than a
+     * tenant subdomain of localhost/127.0.0.1.
+     *
+     * Tenant subdomains always end with .localhost or .127.0.0.1
+     * (e.g. demo.localhost). Everything else (lhr.life, onrender.com,
+     * railway.app, fly.dev, serveousercontent.com, custom domains)
+     * is treated as the main platform root.
+     */
+    private boolean isExternalPlatformDomain(String host) {
+        // Tenant subdomains are always *.localhost or *.127.0.0.1
+        // Any other domain is the platform root
+        return !host.endsWith(".localhost")
+                && !host.endsWith(".127.0.0.1")
+                && !host.equals("localhost")
+                && !host.equals("127.0.0.1");
+    }
+
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         TenantContext.clear();
