@@ -1,220 +1,994 @@
 <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
 
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${appName} + ' — Multi-tenant LMS for your business'">toplms — Multi-tenant LMS</title>
-    <link rel="stylesheet" th:href="@{/css/landing.css}">
+    <title th:text="${appName ?: 'TopLMS'} + ' — Academic Multi-Tenant Learning Management Platform'">TopLMS — Academic
+        Multi-Tenant LMS</title>
 </head>
+
 <body>
 
-    <main layout:fragment="content">
-
-        <!-- ===== Hero ===== -->
+    <main layout:fragment="content"> <!-- ===================================================================
+             1. HERO SECTION (#hero)
+             =================================================================== -->
         <section class="hero" id="hero">
+            <div class="hero-ambient-glow" aria-hidden="true"></div>
             <div class="container hero-layout">
-                <div class="hero-copy">
-                <span class="badge">Multi-tenant SaaS · Built on Spring Boot</span>
-                <h1>Transform the Way You <span class="grad">Learn and Teach</span></h1>
-                <p class="lede">
-                    <span th:text="${appName}">TopLMS</span> gives every business its own isolated,
-                    branded learning platform — courses, learners and AI-powered tutoring,
-                    live in under a minute.
-                </p>
-                <div class="hero-actions">
-                    <a class="btn btn-primary btn-lg" th:href="@{/signup}">Get Started Free</a>
-                    <a class="btn btn-ghost btn-lg" href="#features">Explore Features</a>
+                <div class="hero-copy reveal-on-scroll reveal-left">
+                    <div class="pill-badge">
+                        <span class="pulse-dot"></span>
+                        <span>Academic Multi-Tenant SaaS · Spring Boot &amp; JPA</span>
+                    </div>
+                    <h1>
+                        The Academic LMS Built for <span class="gradient-text">Modern Institutions</span>
+                    </h1>
+                    <p class="hero-lede">
+                        Empower faculty, engage learners, and govern your entire academic ecosystem with dedicated,
+                        branded workspaces, automated grading, and role-based intelligence.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary btn-lg" th:href="@{/signup}">
+                            <span>Launch Your Academy</span>
+                            <svg class="icon-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                        <a class="btn btn-ghost btn-lg" href="#roles">
+                            <span>Explore Roles</span>
+                        </a>
+                    </div>
+                    <div class="hero-reassurance">
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Dedicated Subdomains</span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> No Credit Card Required</span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Instant Provisioning</span>
+                    </div>
                 </div>
-                <p class="hero-note">No credit card required · Free to start</p>
-                </div>
-                <div class="dashboard-preview hero-preview" aria-label="Presentation-only TopLMS dashboard preview">
-                    <div class="preview-top"><span class="preview-dot"></span><strong>Workspace overview</strong><span class="preview-status">Demo</span></div>
-                    <div class="preview-stats"><div><strong>24</strong><span>Courses</span></div><div><strong>312</strong><span>Learners</span></div><div><strong>18</strong><span>Instructors</span></div></div>
-                    <div class="preview-chart"><span class="chart-title">Course progress</span><div class="chart-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-                    <div class="preview-activity"><span>Recent activity</span><b>New learner enrolled</b><b>Certificate earned</b></div>
+
+                <!-- Interactive Layered Glassmorphic Preview Card -->
+                <div class="hero-visual reveal-on-scroll reveal-right"
+                    aria-label="Interactive TopLMS Academic Workspace Preview">
+                    <div class="preview-glass-card" id="heroPreviewCard">
+                        <div class="preview-card-header">
+                            <div class="preview-domain-pill">
+                                <span class="status-indicator"></span>
+                                <span>demo.toplms.app</span>
+                            </div>
+                            <span class="preview-tag">Tenant Workspace</span>
+                        </div>
+
+                        <div class="preview-stats-row">
+                            <div class="preview-stat-card">
+                                <strong data-counter-target="48" data-counter-decimals="0">48</strong>
+                                <span>Active Courses</span>
+                            </div>
+                            <div class="preview-stat-card highlight">
+                                <strong data-counter-target="1240" data-counter-decimals="0"
+                                    data-counter-format="comma">1,240</strong>
+                                <span>Enrolled Students</span>
+                            </div>
+                            <div class="preview-stat-card">
+                                <strong data-counter-target="98.4" data-counter-decimals="1"
+                                    data-counter-suffix="%">98.4%</strong>
+                                <span>Completion</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-curriculum-widget">
+                            <div class="widget-header">
+                                <span class="widget-title">Live Course Curriculum</span>
+                                <span class="widget-badge">Semester 1</span>
+                            </div>
+                            <div class="widget-lesson-row active">
+                                <div class="lesson-icon">▶</div>
+                                <div class="lesson-info">
+                                    <strong>CS101: Distributed Architecture</strong>
+                                    <span>Module 4 · Video Lecture &amp; Quiz</span>
+                                </div>
+                                <span class="lesson-status">In Progress</span>
+                            </div>
+                            <div class="widget-lesson-row">
+                                <div class="lesson-icon">📄</div>
+                                <div class="lesson-info">
+                                    <strong>SE204: Multi-Tenant Data Modeling</strong>
+                                    <span>Module 2 · Assignment Due Tomorrow</span>
+                                </div>
+                                <span class="lesson-status pending">Pending</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-floating-badge float-slow">
+                            <span class="badge-icon">✓</span>
+                            <div>
+                                <strong>Assignment Graded</strong>
+                                <small>Instructor awarded 95/100 · 2m ago</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== Trust / Stats ===== -->
-        <section class="trust-section trust-stats" id="trust-stats">
+        <!-- ===================================================================
+             2. TRUST & INSTITUTIONAL METRICS (#trust-stats)
+             =================================================================== -->
+        <section class="trust-section" id="trust-stats">
             <div class="container">
-                <div class="trust-intro">
-                    <h2>Learning That Grows With You</h2>
-                    <p class="trust-statement">A smarter way for organizations, instructors and learners to grow together.</p>
+                <div class="section-head text-center reveal-on-scroll reveal-fade">
+                    <span class="eyebrow">Institutional Scale &amp; Trust</span>
+                    <h2>Engineered for High-Reliability Academic Delivery</h2>
+                    <p>Designed specifically to meet the security, isolation, and scale demands of universities,
+                        bootcamps, and training academies.</p>
                 </div>
-                <div class="trust-layout">
-                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">▦</span><div><strong>10+</strong><span>Organizations</span></div></article>
-                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">▤</span><div><strong>50+</strong><span>Courses</span></div></article>
-                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">♙</span><div><strong>500+</strong><span>Learners</span></div></article>
-                    <article class="trust-stat"><span class="trust-icon" aria-hidden="true">✦</span><div><strong>25+</strong><span>Instructors</span></div></article>
-                </div>
-            </div>
-        </section>
 
-        <!-- ===== Features ===== -->
-        <section class="section" id="features">
-            <div class="container">
-                <div class="section-head">
-                    <div class="eyebrow">Everything you need</div>
-                    <h2>One platform to run your training business</h2>
-                    <p>From tenant isolation to AI tutoring — the building blocks of a modern LMS, ready out of the box.</p>
-                </div>
-                <div class="features">
-                    <article class="feature">
-                        <div class="icon">🏢</div>
-                        <h3>Isolated workspaces</h3>
-                        <p>Every business is a separate tenant. Your data stays yours — cleanly partitioned from everyone else's.</p>
+                <div class="trust-grid reveal-stagger">
+                    <article class="trust-metric-card">
+                        <div class="metric-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                        </div>
+                        <div class="metric-value" data-counter-target="99.99" data-counter-decimals="2"
+                            data-counter-suffix="%">99.99%</div>
+                        <div class="metric-label">Uptime &amp; Tenant Isolation</div>
+                        <p class="metric-desc">Guaranteed row-level database partitioning per organization.</p>
                     </article>
-                    <article class="feature">
-                        <div class="icon">📚</div>
-                        <h3>Course management</h3>
-                        <p>Build courses, lessons and assessments with a structure that fits how you teach.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">🎓</div>
-                        <h3>Learner enrollment</h3>
-                        <p>Invite learners, manage enrollments and track progress through every course.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">🤖</div>
-                        <h3>AI tutoring</h3>
-                        <p>Claude-powered tutoring and automatic quiz generation, scoped and billed per tenant.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">🔒</div>
-                        <h3>Secure by default</h3>
-                        <p>BCrypt-hashed credentials and per-tenant access control built in from day one.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">⚡</div>
-                        <h3>Instant setup</h3>
-                        <p>Pick a name and a URL — your workspace is provisioned and live immediately.</p>
-                    </article>
-                </div>
-            </div>
-        </section>
 
-        <!-- ===== How it works ===== -->
-        <section class="section alt" id="how">
-            <div class="container">
-                <div class="section-head">
-                    <div class="eyebrow">How it works</div>
-                    <h2>From signup to teaching in three steps</h2>
-                </div>
-                <div class="steps">
-                    <article class="step feature">
-                        <div class="num">1</div>
-                        <h3>Create your workspace</h3>
-                        <p>Choose your business name and a URL like <code>toplms.app/acme</code>. You're live instantly.</p>
+                    <article class="trust-metric-card">
+                        <div class="metric-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <div class="metric-value" data-counter-target="10000" data-counter-decimals="0"
+                            data-counter-format="comma" data-counter-suffix="+">10,000+</div>
+                        <div class="metric-label">Active Student Cohorts</div>
+                        <p class="metric-desc">Learners attending lectures, taking quizzes, and earning credentials.</p>
                     </article>
-                    <article class="step feature">
-                        <div class="num">2</div>
-                        <h3>Add your content</h3>
-                        <p>Upload courses, invite instructors, and enroll your first learners.</p>
+
+                    <article class="trust-metric-card">
+                        <div class="metric-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                                <line x1="8" y1="21" x2="16" y2="21" />
+                                <line x1="12" y1="17" x2="12" y2="21" />
+                            </svg>
+                        </div>
+                        <div class="metric-value" data-counter-target="100" data-counter-decimals="0"
+                            data-counter-suffix="%">100%</div>
+                        <div class="metric-label">RBAC Security Enforcement</div>
+                        <p class="metric-desc">JSON-driven navigation and strict JWT token scope validation.</p>
                     </article>
-                    <article class="step feature">
-                        <div class="num">3</div>
-                        <h3>Start teaching</h3>
-                        <p>Learners sign in to your branded portal and start learning — with AI help on hand.</p>
+
+                    <article class="trust-metric-card">
+                        <div class="metric-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <div class="metric-value" data-counter-target="60" data-counter-decimals="0"
+                            data-counter-prefix="< " data-counter-suffix="s">&lt; 60s</div>
+                        <div class="metric-label">Workspace Provisioning</div>
+                        <p class="metric-desc">Zero-config signup instantly seeds tenant roles and admin controls.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <!-- ===== Closing CTA ===== -->
-        <section class="pricing-section py-5" id="pricing">
+        <!-- ===================================================================
+             3. THE 3-ROLE ACADEMIC ECOSYSTEM (#roles)
+             =================================================================== -->
+        <section class="section roles-section" id="roles">
             <div class="container">
-                <div class="text-center w-full mx-auto !mb-16 text-white !my-11 ">
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Simple, Transparent Pricing
-                    </h2>
-                    <p class="mt-4 text-xl text-slate-600">
-                        Choose the perfect tier to launch your independent learning academy instantly.
+                <div class="section-head text-center reveal-on-scroll reveal-fade">
+                    <span class="eyebrow">The 3-Role Ecosystem</span>
+                    <h2>Tailored Portals for Every Academic Stakeholder</h2>
+                    <p>Unlike generic tools, TopLMS provides dedicated, role-specific interfaces customized for
+                        administrators, instructors, and learners.</p>
+                </div>
+
+                <!-- Role Switcher Tabs -->
+                <div class="role-tabs-wrap reveal-on-scroll reveal-scale">
+                    <div class="role-tabs" role="tablist">
+                        <button class="role-tab active" id="tab-admin" role="tab" aria-selected="true"
+                            onclick="switchRoleTab('admin')">
+                            <span class="tab-icon">🏢</span>
+                            <span>Tenant Admin</span>
+                        </button>
+                        <button class="role-tab" id="tab-instructor" role="tab" aria-selected="false"
+                            onclick="switchRoleTab('instructor')">
+                            <span class="tab-icon">👨‍🏫</span>
+                            <span>Instructor</span>
+                        </button>
+                        <button class="role-tab" id="tab-learner" role="tab" aria-selected="false"
+                            onclick="switchRoleTab('learner')">
+                            <span class="tab-icon">🎓</span>
+                            <span>Learner</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Role Panels -->
+                <div class="role-panels-container reveal-on-scroll reveal-up">
+
+                    <!-- 1. Admin Panel -->
+                    <div class="role-panel active" id="panel-admin" role="tabpanel">
+                        <div class="role-panel-content">
+                            <div class="role-panel-text">
+                                <div class="role-badge badge-admin">Workspace Governance</div>
+                                <h3>Total Oversight of Faculty, Rosters &amp; Subscription Quotas</h3>
+                                <p>Administrators govern the entire institution: invite instructors, manage student
+                                    cohorts, configure academy branding, and monitor plan consumption.</p>
+                                <ul class="role-feature-list">
+                                    <li><strong>Cohort &amp; Staff Onboarding:</strong> Add faculty and admit student
+                                        batches with auto-assigned roles.</li>
+                                    <li><strong>Live Plan Quota Gauges:</strong> Real-time capacity monitoring for
+                                        courses and student seats.</li>
+                                    <li><strong>Custom Subdomain &amp; Branding:</strong> Personalize your login portal,
+                                        logos, and workspace metadata.</li>
+                                </ul>
+                                <a class="btn btn-primary" th:href="@{/signup}">Register Organization</a>
+                            </div>
+                            <div class="role-panel-visual">
+                                <div class="mockup-frame">
+                                    <div class="mockup-bar"><span></span><span></span><span></span><em>Tenant Admin
+                                            Dashboard</em></div>
+                                    <div class="mockup-body">
+                                        <div class="mockup-metric-row">
+                                            <div class="mockup-tile"><span>Teachers</span><strong>18 Staff</strong>
+                                            </div>
+                                            <div class="mockup-tile"><span>Students</span><strong>1,240 Active</strong>
+                                            </div>
+                                            <div class="mockup-tile"><span>Plan Limit</span><strong>20/20
+                                                    Courses</strong></div>
+                                        </div>
+                                        <div class="mockup-table">
+                                            <div class="table-header"><span>Faculty Member</span><span>Assigned
+                                                    Courses</span><span>Status</span></div>
+                                            <div class="table-row"><span>Dr. Sarah Jenkins</span><span>Distributed
+                                                    Systems</span><span class="pill-active">Active</span></div>
+                                            <div class="table-row"><span>Prof. David Miller</span><span>Database
+                                                    Architecture</span><span class="pill-active">Active</span></div>
+                                            <div class="table-row"><span>Elena Rostova</span><span>UI/UX
+                                                    Engineering</span><span class="pill-active">Active</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Instructor Panel -->
+                    <div class="role-panel" id="panel-instructor" role="tabpanel">
+                        <div class="role-panel-content">
+                            <div class="role-panel-text">
+                                <div class="role-badge badge-instructor">Curriculum &amp; Evaluation</div>
+                                <h3>Structured Course Authoring &amp; Streamlined Grading</h3>
+                                <p>Faculty members get a dedicated studio to build multimedia curricula, set assignments
+                                    with rubrics, and provide feedback directly in their gradebook.</p>
+                                <ul class="role-feature-list">
+                                    <li><strong>Hierarchical Course Studio:</strong> Organize content into modules,
+                                        lessons, and video resources.</li>
+                                    <li><strong>Assessment &amp; Quiz Engine:</strong> Define deadlines, submission
+                                        formats, and automated quizzes.</li>
+                                    <li><strong>Interactive Gradebook:</strong> Evaluate student homework and publish
+                                        grades with one click.</li>
+                                </ul>
+                                <a class="btn btn-primary" href="#instructor-suite">Explore Teaching Tools</a>
+                            </div>
+                            <div class="role-panel-visual">
+                                <div class="mockup-frame">
+                                    <div class="mockup-bar"><span></span><span></span><span></span><em>Instructor
+                                            Authoring Studio</em></div>
+                                    <div class="mockup-body">
+                                        <div class="curriculum-item">
+                                            <span class="drag-handle">⠿</span>
+                                            <div><strong>Module 1: Introduction to Distributed Systems</strong><span>3
+                                                    Lessons · 1 Quiz</span></div>
+                                        </div>
+                                        <div class="curriculum-item">
+                                            <span class="drag-handle">⠿</span>
+                                            <div><strong>Module 2: Multi-Tenancy Data Isolation</strong><span>4 Lessons
+                                                    · 1 Assignment</span></div>
+                                        </div>
+                                        <div class="grading-preview">
+                                            <span>Submissions pending review: <strong>14 students</strong></span>
+                                            <span class="btn-mini">Grade Next</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Learner Panel -->
+                    <div class="role-panel" id="panel-learner" role="tabpanel">
+                        <div class="role-panel-content">
+                            <div class="role-panel-text">
+                                <div class="role-badge badge-learner">Distraction-Free Learning</div>
+                                <h3>Intuitive Study Portal, Seamless Submissions &amp; Progress</h3>
+                                <p>Students enjoy a frictionless classroom experience: watch lectures, submit
+                                    coursework, take interactive quizzes, and earn verifiable certificates.</p>
+                                <ul class="role-feature-list">
+                                    <li><strong>Focus Mode Lecture Player:</strong> Video streaming, rich reading
+                                        materials, and syllabus checklists.</li>
+                                    <li><strong>One-Click Homework Uploads:</strong> Easy file attachments with deadline
+                                        countdowns.</li>
+                                    <li><strong>Academic Gradebook &amp; Badges:</strong> Transparent score summaries
+                                        and completion credentials.</li>
+                                </ul>
+                                <a class="btn btn-primary" href="#learner-experience">See Learner View</a>
+                            </div>
+                            <div class="role-panel-visual">
+                                <div class="mockup-frame">
+                                    <div class="mockup-bar"><span></span><span></span><span></span><em>Learner Study
+                                            Portal</em></div>
+                                    <div class="mockup-body">
+                                        <div class="player-mockup">
+                                            <div class="player-screen">
+                                                <div class="play-btn">▶</div>
+                                                <span class="video-title">Lecture 04: Spring Security
+                                                    Architecture</span>
+                                            </div>
+                                            <div class="player-progress">
+                                                <div class="progress-bar-fill" style="width: 75%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="assignment-due">
+                                            <span>⚡ Upcoming: Homework 2 due in 24 hours</span>
+                                            <span class="btn-mini-sub">Submit File</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             4. ARCHITECTURAL FEATURES BENTO GRID (#features)
+             =================================================================== -->
+        <section class="section features-section" id="features">
+            <div class="container">
+                <div class="section-head text-center reveal-on-scroll reveal-fade">
+                    <span class="eyebrow">Enterprise SaaS Architecture</span>
+                    <h2>Built for Security, Scalability &amp; Simplicity</h2>
+                    <p>Explore the robust foundation that enables each institution to operate in complete data
+                        isolation.</p>
+                </div>
+
+                <div class="bento-grid reveal-stagger">
+                    <!-- Bento Card 1: Multi-Tenancy (Wide) -->
+                    <article class="bento-card bento-wide">
+                        <div class="bento-icon">🏢</div>
+                        <h3>True Single-Database Multi-Tenancy</h3>
+                        <p>Every tenant’s records are partitioned by a rigorous <code>tenant_id</code> foreign key in
+                            PostgreSQL, ensuring total privacy with zero cross-tenant contamination.</p>
+                        <div class="bento-code-snippet">
+                            <code>SELECT * FROM courses WHERE tenant_id = :currentTenantId</code>
+                        </div>
+                    </article>
+
+                    <!-- Bento Card 2: Subdomain Routing -->
+                    <article class="bento-card">
+                        <div class="bento-icon">⚡</div>
+                        <h3>Instant Subdomain Routing</h3>
+                        <p>Requests are automatically mapped via <code>TenantInterceptor</code> so
+                            <code>acme.toplms.app</code> serves exclusively Acme’s students.
+                        </p>
+                    </article>
+
+                    <!-- Bento Card 3: Dynamic RBAC -->
+                    <article class="bento-card">
+                        <div class="bento-icon">🛡️</div>
+                        <h3>Dynamic JSON-Driven RBAC</h3>
+                        <p>Role menus are rendered dynamically from <code>menu_json</code>, ensuring every user only
+                            accesses authorized endpoints.</p>
+                    </article>
+
+                    <!-- Bento Card 4: Assessments -->
+                    <article class="bento-card">
+                        <div class="bento-icon">📝</div>
+                        <h3>Assignments &amp; Assessments</h3>
+                        <p>Create deadlines, file attachment uploads, and interactive quizzes with instant score
+                            tracking.</p>
+                    </article>
+
+                    <!-- Bento Card 5: Telemetry -->
+                    <article class="bento-card">
+                        <div class="bento-icon">📊</div>
+                        <h3>Live Academic Telemetry</h3>
+                        <p>Monitor cohort progress, submission turnaround times, and seat utilization in real-time.</p>
+                    </article>
+
+                    <!-- Bento Card 6: Zero-Config Provisioning -->
+                    <article class="bento-card">
+                        <div class="bento-icon">🚀</div>
+                        <h3>Automated Provisioning</h3>
+                        <p>Registering an academy seeds tenant roles, permissions, and administrative credentials in one
+                            transaction.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             5. ROLE DEEP DIVE: INSTRUCTOR SUITE (#instructor-suite)
+             =================================================================== -->
+        <section class="section deep-dive-section" id="instructor-suite">
+            <div class="container">
+                <div class="deep-dive-grid reveal-on-scroll reveal-up">
+                    <div class="deep-dive-copy">
+                        <span class="eyebrow text-purple">Faculty Authoring Studio</span>
+                        <h2>Designed for Educators to Teach Without Administrative Friction</h2>
+                        <p>Focus on pedagogical excellence. TopLMS gives instructors intuitive tools to assemble
+                            curricula, publish lectures, and review student work.</p>
+
+                        <div class="feature-checklist">
+                            <div class="check-item">
+                                <div class="check-icon purple">✦</div>
+                                <div>
+                                    <h4>Drag-and-Drop Curriculum Studio</h4>
+                                    <p>Structure modules, embed video lectures, attach reading PDFs, and set learning
+                                        milestones.</p>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-icon purple">✦</div>
+                                <div>
+                                    <h4>Assignment &amp; Quiz Engine</h4>
+                                    <p>Establish submission criteria, strict due dates, and multiple-choice questions.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-icon purple">✦</div>
+                                <div>
+                                    <h4>Inline Student Feedback</h4>
+                                    <p>Award rubric points and provide constructive remarks directly within the grading
+                                        drawer.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deep-dive-visual">
+                        <div class="studio-card-preview">
+                            <div class="studio-header">
+                                <strong>Course Authoring: Distributed Systems</strong>
+                                <span class="tag-published">Published</span>
+                            </div>
+                            <div class="studio-module">
+                                <div class="module-title">📁 Module 1: Architecture Fundamentals</div>
+                                <div class="module-lesson"><span>▶ 1.1 Intro to Client-Server
+                                        Architecture</span><small>18 mins</small></div>
+                                <div class="module-lesson"><span>▶ 1.2 Microservices &amp; Multi-Tenancy</span><small>24
+                                        mins</small></div>
+                                <div class="module-lesson assignment"><span>📄 1.3 Assessment: Subdomain
+                                        Routing</span><small>Due Friday</small></div>
+                            </div>
+                            <div class="grading-drawer-mini">
+                                <span>Recent Submission: <strong>Alex Chen</strong></span>
+                                <span class="badge-grade-mini">Grade: 98/100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             6. ROLE DEEP DIVE: LEARNER EXPERIENCE (#learner-experience)
+             =================================================================== -->
+        <section class="section deep-dive-section alt-bg" id="learner-experience">
+            <div class="container">
+                <div class="deep-dive-grid reverse reveal-on-scroll reveal-up">
+                    <div class="deep-dive-visual">
+                        <div class="learner-card-preview">
+                            <div class="classroom-top">
+                                <div class="course-meta">
+                                    <strong>SE301: Full-Stack Web Engineering</strong>
+                                    <span>Instructor: Dr. Sarah Jenkins</span>
+                                </div>
+                                <span class="badge-progress-pill">78% Complete</span>
+                            </div>
+                            <div class="classroom-player-box">
+                                <div class="player-inner">
+                                    <span class="play-symbol">▶</span>
+                                    <p>Lecture 08: Spring MVC &amp; Thymeleaf Layouts</p>
+                                </div>
+                            </div>
+                            <div class="classroom-actions-row">
+                                <span class="btn-check-complete">✓ Mark Complete</span>
+                                <span class="btn-download-notes">📥 Download Syllabus</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deep-dive-copy">
+                        <span class="eyebrow text-emerald">Student Learning Experience</span>
+                        <h2>A Distraction-Free Classroom Designed for Real Mastery</h2>
+                        <p>Learners enjoy a clean, responsive study portal optimized for desktop and mobile devices,
+                            helping them stay on top of coursework and deadlines.</p>
+
+                        <div class="feature-checklist">
+                            <div class="check-item">
+                                <div class="check-icon emerald">✦</div>
+                                <div>
+                                    <h4>Focus Mode Video &amp; Reading Player</h4>
+                                    <p>Stream lectures, review markdown study notes, and track progress
+                                        module-by-module.</p>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-icon emerald">✦</div>
+                                <div>
+                                    <h4>Frictionless Assignment Submissions</h4>
+                                    <p>Upload project files, monitor deadlines, and receive instant instructor feedback.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-icon emerald">✦</div>
+                                <div>
+                                    <h4>Verifiable Course Certificates</h4>
+                                    <p>Earn downloadable credentials and certificates upon successfully finishing
+                                        courses.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             7. ROLE DEEP DIVE: ADMIN GOVERNANCE (#admin-governance)
+             =================================================================== -->
+        <section class="section deep-dive-section" id="admin-governance">
+            <div class="container">
+                <div class="deep-dive-grid reveal-on-scroll reveal-up">
+                    <div class="deep-dive-copy">
+                        <span class="eyebrow text-blue">Institutional Governance</span>
+                        <h2>Complete Control Over Staff Rosters, Plan Quotas &amp; Brand</h2>
+                        <p>Tenant Administrators retain total authority over their academy environment, managing
+                            permissions, tracking usage against plan caps, and maintaining brand consistency.</p>
+
+                        <div class="feature-checklist">
+                            <div class="check-item">
+                                <div class="check-icon blue">✦</div>
+                                <div>
+                                    <h4>Faculty &amp; Student Roster Management</h4>
+                                    <p>Add teachers, enroll student cohorts, reset credentials, and assign
+                                        administrative privileges.</p>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-icon blue">✦</div>
+                                <div>
+                                    <h4>Live Plan Quota &amp; Limit Tracking</h4>
+                                    <p>Always know your active course count and enrolled student volume against plan
+                                        tiers.</p>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-icon blue">✦</div>
+                                <div>
+                                    <h4>Custom Branding &amp; Organization Slug</h4>
+                                    <p>Configure academy logos, portal titles, and personalized URLs for professional
+                                        delivery.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deep-dive-visual">
+                        <div class="admin-card-preview">
+                            <div class="admin-preview-header">
+                                <strong>Organization Controls &amp; Quotas</strong>
+                                <span class="plan-pill-growth">GROWTH Plan</span>
+                            </div>
+                            <div class="quota-bars-wrap">
+                                <div class="quota-bar-item">
+                                    <div class="quota-meta"><span>Courses Used</span><strong>16 / 20 Courses</strong>
+                                    </div>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                                <div class="quota-bar-item">
+                                    <div class="quota-meta"><span>Student Seats</span><strong>380 / 500
+                                            Learners</strong></div>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 76%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="admin-quick-actions">
+                                <span class="action-tag">+ Add Instructor</span>
+                                <span class="action-tag">+ Enroll Cohort</span>
+                                <span class="action-tag">⚙ Workspace Settings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             8. HOW IT WORKS WORKFLOW (#how)
+             =================================================================== -->
+        <section class="section how-section alt-bg" id="how">
+            <div class="container">
+                <div class="section-head text-center reveal-on-scroll reveal-fade">
+                    <span class="eyebrow">Zero-Friction Onboarding</span>
+                    <h2>Launch Your Academic Workspace in 3 Simple Steps</h2>
+                    <p>Go from signup to teaching in under 60 seconds with automated tenant provisioning.</p>
+                </div>
+
+                <div class="steps-grid reveal-stagger">
+                    <article class="step-card">
+                        <div class="step-number">01</div>
+                        <h3>Claim Your Workspace</h3>
+                        <p>Choose your organization name and reserve your dedicated subdomain slug (e.g.
+                            <code>oxford.toplms.app</code>).
+                        </p>
+                    </article>
+
+                    <article class="step-card">
+                        <div class="step-number">02</div>
+                        <h3>Structure Your Curriculum</h3>
+                        <p>Upload courses, create lesson modules, and invite faculty members to begin instructional
+                            authoring.</p>
+                    </article>
+
+                    <article class="step-card">
+                        <div class="step-number">03</div>
+                        <h3>Admit Learners &amp; Teach</h3>
+                        <p>Invite student cohorts, conduct quizzes, evaluate submissions, and track academic
+                            achievement.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             9. INSIGHTS & TELEMETRY (#insights)
+             =================================================================== -->
+        <section class="section telemetry-section" id="insights">
+            <div class="container">
+                <div class="section-head text-center reveal-on-scroll reveal-fade">
+                    <span class="eyebrow">Academic Intelligence</span>
+                    <h2>Actionable Telemetry to Drive Student Success</h2>
+                    <p>Real-time analytics help administrators and faculty identify trends and support learners when it
+                        matters most.</p>
+                </div>
+
+                <div class="telemetry-grid reveal-stagger">
+                    <article class="telemetry-card">
+                        <div class="card-top-title">Course Completion Velocity</div>
+                        <div class="radial-metric-box">
+                            <div class="radial-number" data-counter-target="92" data-counter-decimals="0"
+                                data-counter-suffix="%">92%</div>
+                            <span class="radial-label">On-Track Completion Rate</span>
+                        </div>
+                        <p class="telemetry-caption">Up 14% across all active semester cohorts compared to last term.
+                        </p>
+                    </article>
+
+                    <article class="telemetry-card">
+                        <div class="card-top-title">Grading Turnaround</div>
+                        <div class="chart-bars-preview">
+                            <div class="bar-col"><i style="--bar-target-height: 40%;"></i><span>Mon</span></div>
+                            <div class="bar-col"><i style="--bar-target-height: 75%;"></i><span>Tue</span></div>
+                            <div class="bar-col"><i style="--bar-target-height: 90%;"></i><span>Wed</span></div>
+                            <div class="bar-col"><i style="--bar-target-height: 60%;"></i><span>Thu</span></div>
+                            <div class="bar-col"><i style="--bar-target-height: 95%;"></i><span>Fri</span></div>
+                        </div>
+                        <p class="telemetry-caption">Average assignment turnaround time: <strong>1.4 days</strong>.</p>
+                    </article>
+
+                    <article class="telemetry-card">
+                        <div class="card-top-title">Active Learner Engagement</div>
+                        <div class="heatmap-grid">
+                            <span class="heat-cell h1"></span><span class="heat-cell h2"></span><span
+                                class="heat-cell h3"></span><span class="heat-cell h3"></span>
+                            <span class="heat-cell h2"></span><span class="heat-cell h3"></span><span
+                                class="heat-cell h1"></span><span class="heat-cell h3"></span>
+                            <span class="heat-cell h3"></span><span class="heat-cell h2"></span><span
+                                class="heat-cell h3"></span><span class="heat-cell h2"></span>
+                        </div>
+                        <p class="telemetry-caption">Peak student study hours: <strong>6:00 PM – 10:00 PM</strong>
+                            daily.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             10. DYNAMIC PRICING PLANS (#pricing)
+             =================================================================== -->
+        <section class="section pricing-section" id="pricing">
+            <div class="container">
+                <div class="section-head text-center reveal-on-scroll reveal-fade">
+                    <span class="eyebrow">Transparent Academic Pricing</span>
+                    <h2>Predictable Plans for Institutions of Any Size</h2>
+                    <p>Select the tier that matches your current cohort size and scale seamlessly as your academy grows.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch justify-center max-w-5xl mx-auto  !my-8">
+                <div class="pricing-grid reveal-stagger">
+                    <!-- Dynamic Database Plans (FREE, GROWTH) -->
+                    <div th:each="plan : ${plans}" class="plan-card"
+                        th:classappend="${plan.id == 'GROWTH'} ? 'plan-card-featured' : ''">
 
-                    <div th:each="plan : ${plans}"
-                         class="bg-white rounded-2xl border border-slate-200 !p-8 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative">
-
-                        <div th:if="${plan.id == 'GROWTH'}"
-                             class="absolute !-top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white !px-4 !py-2 rounded-full text-xs font-semibold uppercase tracking-wider shadow-sm">
+                        <div th:if="${plan.id == 'GROWTH'}" class="popular-badge-pill">
                             Most Popular
                         </div>
-
-                        <div>
-                            <div class="flex items-center justify-between !mb-4">
-                                <h3 class="text-xl font-bold text-slate-900" th:text="${plan.name}">Growth Tier</h3>
-                                <span class="text-xs font-mono font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded" th:text="${plan.id}">GROWTH</span>
+                        <div class="plan-header">
+                            <div class="plan-title-row">
+                                <h3 th:text="${plan.name}">Growth Tier</h3>
+                                <span class="plan-code" th:text="${plan.id}">GROWTH</span>
                             </div>
+                            <p class="plan-subtitle"
+                                th:text="${plan.id == 'FREE'} ? 'Ideal for independent educators and pilot courses.' : 'Designed for growing academies and specialized bootcamps.'">
+                                Plan subtitle description
+                            </p>
 
-                            <div class="my-6 flex items-baseline text-slate-900">
-                        <span class="text-5xl font-extrabold tracking-tight"
-                              th:text="${plan.priceJSON != null && plan.priceJSON.containsKey('USD')} ? '$' + ${#numbers.formatDecimal(plan.priceJSON['USD'], 0, 0)} : '$0'">
-                            $49
-                        </span>
-                                <span class="ml-1 text-xl font-medium text-slate-500">/mo</span>
+                            <div class="plan-price-wrap">
+                                <span class="price-amount"
+                                    th:text="${plan.priceJSON != null && plan.priceJSON.containsKey('USD')} ? '$' + ${#numbers.formatDecimal(plan.priceJSON['USD'], 0, 0)} : '$0'">
+                                    $49
+                                </span>
+                                <span class="price-period">/month</span>
                             </div>
-
-                            <hr class="border-slate-100 my-6" />
-
-                            <ul class="space-y-4 text-sm text-slate-600 !my-8">
-                                <li class="flex items-center justify-between bg-slate-50 !p-3 rounded-lg">
-                                    <span class="font-medium text-slate-700">Course Limit:</span>
-                                    <span class="font-bold text-slate-900"
-                                          th:text="${plan.maxCourses == -1} ? 'Unlimited' : ${plan.maxCourses}">5</span>
-                                </li>
-                                <li class="flex items-center justify-between bg-slate-50 !p-3 rounded-lg">
-                                    <span class="font-medium text-slate-700">Student Capacity:</span>
-                                    <span class="font-bold text-slate-900"
-                                          th:text="${plan.maxStudents == -1} ? 'Unlimited' : ${plan.maxStudents}">500</span>
-                                </li>
-
-                                <li th:each="entry : ${plan.modulesJSON}" class="flex items-start gap-3 pt-2 !p-3">
-                                    <svg th:if="${entry.value}" class="h-5 w-5 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <svg th:if="${!entry.value}" class="h-5 w-5 text-slate-300 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                    <span th:text="${#strings.capitalizeWords(#strings.replace(entry.key, '_', ' '))}"
-                                          th:classappend="${!entry.value} ? 'text-slate-400 line-through' : 'text-slate-700'">
-                                Feature Name
-                            </span>
-                                </li>
-                            </ul>
                         </div>
 
-                        <div class="mt-auto pt-4">
-                            <a th:href="@{/register(planId=${plan.id})}"
-                               th:class="${plan.id == 'GROWTH'}
-                                 ? 'block text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl transition duration-150 shadow-sm'
-                                 : 'block text-center bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 px-4 rounded-xl transition duration-150 shadow-sm'"
-                               class="font-medium">
-                                Get Started
+                        <div class="plan-limits-box">
+                            <div class="limit-row">
+                                <span>Course Capacity</span>
+                                <strong
+                                    th:text="${plan.maxCourses == -1} ? 'Unlimited' : ${plan.maxCourses} + ' Courses'">20
+                                    Courses</strong>
+                            </div>
+                            <div class="limit-row">
+                                <span>Student Roster</span>
+                                <strong
+                                    th:text="${plan.maxStudents == -1} ? 'Unlimited' : ${plan.maxStudents} + ' Students'">500
+                                    Students</strong>
+                            </div>
+                        </div>
+
+                        <ul class="plan-module-list">
+                            <li th:each="entry : ${plan.modulesJSON}" class="module-item"
+                                th:classappend="${!entry.value} ? 'disabled' : ''">
+                                <span class="module-check" th:if="${entry.value}">✓</span>
+                                <span class="module-cross" th:if="${!entry.value}">✕</span>
+                                <span
+                                    th:text="${#strings.capitalizeWords(#strings.replace(entry.key, '_', ' '))}">Module
+                                    Name</span>
+                            </li>
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>Dedicated Subdomain Portal</span>
+                            </li>
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>Role-Based Access Controls</span>
+                            </li>
+                        </ul>
+
+                        <div class="plan-cta-wrap">
+                            <a th:href="@{/register(planId=${plan.id})}" class="btn btn-plan"
+                                th:classappend="${plan.id == 'GROWTH'} ? 'btn-primary' : 'btn-ghost'">
+                                <span th:text="${plan.id == 'FREE'} ? 'Start Free Workspace' : 'Launch Growth Plan'">Get
+                                    Started</span>
                             </a>
                         </div>
+                    </div>
 
-                    </div> </div>
+                    <!-- 3rd Card: Enterprise / Institutional Tier -->
+                    <div class="plan-card plan-card-enterprise">
+                        <div class="enterprise-badge-pill">
+                            Large Institutions
+                        </div>
+
+                        <div class="plan-header">
+                            <div class="plan-title-row">
+                                <h3>Enterprise</h3>
+                                <span class="plan-code">ENTERPRISE</span>
+                            </div>
+                            <p class="plan-subtitle">
+                                Built for universities, polytechnics, and large training organizations.
+                            </p>
+
+                            <div class="plan-price-wrap">
+                                <span class="price-amount">Custom</span>
+                                <span class="price-period">/annual billing</span>
+                            </div>
+                        </div>
+
+                        <div class="plan-limits-box">
+                            <div class="limit-row">
+                                <span>Course Capacity</span>
+                                <strong>Unlimited Courses</strong>
+                            </div>
+                            <div class="limit-row">
+                                <span>Student Roster</span>
+                                <strong>Unlimited Students</strong>
+                            </div>
+                        </div>
+
+                        <ul class="plan-module-list">
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>Unlimited Courses &amp; Student Seats</span>
+                            </li>
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>Dedicated Database &amp; Subdomain Isolation</span>
+                            </li>
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>Custom Enterprise Single Sign-On (SAML / SSO)</span>
+                            </li>
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>All Modules (Quizzes, Assignments, Certificates)</span>
+                            </li>
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>Institutional Grading Audits &amp; Data Export</span>
+                            </li>
+                            <li class="module-item">
+                                <span class="module-check">✓</span>
+                                <span>24/7 Priority SLA &amp; Dedicated Account Manager</span>
+                            </li>
+                        </ul>
+
+                        <div class="plan-cta-wrap">
+                            <a th:href="@{/register(planId='ENTERPRISE')}" class="btn btn-plan btn-primary">
+                                Contact Sales &amp; Launch
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </section>
-        <section class="cta-band bg-light py-5" id="explore">
-            <div class="container text-center">
-                <div class="cta-card">
-                    <h2>Ready to launch your academy?</h2>
-                    <p th:text="'Start free on ' + ${appName} + '! No credit card, no setup fees.'">Start free today.</p>
-                    <a class="btn btn-outline-primary btn-lg" href="#pricing">Explore the platform</a>
+
+        <!-- ===================================================================
+             11. FREQUENTLY ASKED QUESTIONS (#faq)
+             =================================================================== -->
+        <section class="section faq-section alt-bg" id="faq">
+            <div class="container">
+                <div class="section-head text-center reveal-on-scroll reveal-fade">
+                    <span class="eyebrow">Got Questions?</span>
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Everything you need to know about setting up and governing your TopLMS workspace.</p>
+                </div>
+
+                <div class="faq-accordion-wrap reveal-on-scroll reveal-up">
+                    <details class="faq-item" open>
+                        <summary class="faq-question">
+                            <span>How does multi-tenant data isolation work in TopLMS?</span>
+                            <span class="faq-chevron">▼</span>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>TopLMS enforces strict row-level partitioning with a <code>tenant_id</code> on every data
+                                entity in PostgreSQL. All HTTP requests are resolved to your workspace subdomain via
+                                <code>TenantInterceptor</code> and verified against user credentials, completely
+                                preventing any cross-tenant data visibility.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>Can instructors create both video lectures and quizzes?</span>
+                            <span class="faq-chevron">▼</span>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Yes. The Instructor Curriculum Studio supports hierarchical course structures consisting
+                                of modules, rich video lectures, downloadable syllabus resources, multiple-choice
+                                quizzes, and deadline-gated homework assignments.</p>
+                        </div>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>How do students access their academy workspace?</span>
+                            <span class="faq-chevron">▼</span>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Learners can either self-register on your academy’s dedicated subdomain (e.g.
+                                <code>demo.toplms.app/signup</code>) or be directly enrolled by a Tenant Administrator
+                                or Instructor.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>Can we upgrade our subscription plan as our student roster expands?</span>
+                            <span class="faq-chevron">▼</span>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Absolutely. You can start on the FREE tier and upgrade to GROWTH or Custom Enterprise at
+                                any time directly within your Tenant Admin workspace settings without any service
+                                interruption.</p>
+                        </div>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>Is TopLMS compatible with existing university systems?</span>
+                            <span class="faq-chevron">▼</span>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Yes. TopLMS is built on standard Spring Boot 4 architecture, offering RESTful
+                                extensibility and clean data export mechanisms for institutional grading audits.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             12. CLOSING CALL TO ACTION BANNER (#explore)
+             =================================================================== -->
+        <section class="cta-banner-section" id="explore">
+            <div class="container">
+                <div class="cta-banner-card reveal-on-scroll reveal-scale">
+                    <div class="cta-card-content">
+                        <span class="cta-pill">Ready to Begin?</span>
+                        <h2>Launch Your Dedicated Academy Workspace Today</h2>
+                        <p>Join growing academic institutions, bootcamps, and educators delivering superior structured
+                            learning on TopLMS.</p>
+                        <div class="cta-actions">
+                            <a class="btn btn-cta-primary btn-lg" th:href="@{/signup}">
+                                <span>Create Free Workspace</span>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                            <a class="btn btn-cta-ghost btn-lg" href="#pricing">
+                                <span>Compare Plans</span>
+                            </a>
+                        </div>
+                        <p class="cta-micro-note">Instant setup · No credit card required · Free tier available forever
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
 
     </main>
 
-
 </body>
+
 </html>
