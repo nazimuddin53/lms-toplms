@@ -236,6 +236,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.5rem 0.85rem 0.5rem 1.4rem;
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .brand {
@@ -662,10 +663,13 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--color-bg-base);
 }
 
-.role-tabs-wrapper {
+/* Both class names used in HTML — support both */
+.role-tabs-wrapper,
+.role-tabs-wrap {
     display: flex;
     justify-content: center;
     margin-bottom: 2.5rem;
+    overflow: visible;
 }
 
 .role-tabs {
@@ -1404,7 +1408,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
     gap: 1.75rem;
     max-width: 1080px;
     margin: 0 auto;
@@ -1876,28 +1880,93 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   Responsive Adaptations
+   Overflow Prevention — Ensure no element leaks outside its container
    ========================================================================== */
 
-@media (max-width: 1024px) {
-    .hero-layout { grid-template-columns: 1fr; text-align: center; }
-    .hero-copy { align-items: center; }
-    .hero-lede { margin-inline: auto; }
-    .hero-actions { justify-content: center; }
-    .hero-reassurance { justify-content: center; }
-    .hero-visual { max-width: 580px; margin: 0 auto; }
+/* Containment on all potential overflow sources */
+.bento-code-snippet,
+.mockup-body,
+.mockup-table,
+.mockup-metric-row,
+.studio-card-preview,
+.learner-card-preview,
+.admin-card-preview,
+.role-panel-content {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.bento-code-snippet code {
+    display: block;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.table-header, .table-row {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.table-header span, .table-row span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Hero floating badge must never break out of its card */
+.preview-floating-badge {
+    max-width: calc(100% - 2.4rem);
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints — 7 Meaningful Breakpoints
+   1280 | 1100 | 960 | 768 | 600 | 480 | 360
+   ========================================================================== */
+
+/* ── 1280px: slight adjustment for medium laptops ───────────────────────── */
+@media (max-width: 1280px) {
+    .footer-grid { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.75rem; }
+}
+
+/* ── 1100px: Tablet Landscape / Small Laptop ─────────────────────────────── */
+@media (max-width: 1100px) {
+    .hero-layout { grid-template-columns: 1fr 1fr; gap: 2rem; }
     .trust-grid { grid-template-columns: repeat(2, 1fr); }
     .bento-grid { grid-template-columns: 1fr 1fr; }
     .bento-wide { grid-column: span 2; }
-    .role-panel-content { grid-template-columns: 1fr; }
-    .deep-dive-grid, .deep-dive-grid.reverse { grid-template-columns: 1fr; }
-    .deep-dive-copy { order: 1; }
-    .deep-dive-visual { order: 2; max-width: 580px; margin: 0 auto; width: 100%; }
-    .steps-grid, .telemetry-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .steps-grid { grid-template-columns: repeat(3, 1fr); }
+    .telemetry-grid { grid-template-columns: repeat(3, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
 }
 
+/* ── 960px: iPad landscape / standard tablet ─────────────────────────────── */
+@media (max-width: 960px) {
+    .hero-layout { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+    .hero-copy { align-items: center; }
+    .hero-lede { margin-inline: auto; max-width: 540px; }
+    .hero-actions { justify-content: center; }
+    .hero-reassurance { justify-content: center; }
+    .hero-visual { max-width: 560px; margin: 0 auto; }
+
+    .role-panel-content { grid-template-columns: 1fr; gap: 2rem; }
+    .role-panel-text { align-items: flex-start; }
+
+    .deep-dive-grid,
+    .deep-dive-grid.reverse { grid-template-columns: 1fr; gap: 2.5rem; }
+    .deep-dive-copy { order: 1; }
+    .deep-dive-visual { order: 2; max-width: 560px; margin: 0 auto; width: 100%; }
+
+    .steps-grid { grid-template-columns: repeat(3, 1fr); }
+    .telemetry-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── 768px: Tablet Portrait ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
+    /* Navigation */
     .nav-links {
         display: none;
         position: absolute;
@@ -1910,20 +1979,179 @@ h1, h2, h3, h4, h5, h6 {
         flex-direction: column;
         padding: 1.25rem;
         box-shadow: var(--shadow-lg);
+        z-index: 200;
     }
-    .nav-links.nav-links-open {
-        display: flex;
+    .nav-links.nav-links-open { display: flex; }
+    .nav-mobile-toggle { display: flex; }
+    /* Hide 'Sign In' text on small tablets to save space, keep CTA */
+    .nav-login-link { display: none; }
+
+    /* Hero */
+    .hero-visual { max-width: 100%; }
+    .preview-floating-badge {
+        right: 10px;
+        bottom: -14px;
+        padding: 0.5rem 0.75rem;
+        gap: 0.5rem;
     }
-    .nav-mobile-toggle {
-        display: flex;
-    }
-    .trust-grid { grid-template-columns: 1fr; }
+
+    /* Trust Grid */
+    .trust-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Bento */
     .bento-grid { grid-template-columns: 1fr; }
     .bento-wide { grid-column: span 1; }
-    .role-tabs { flex-direction: column; width: 100%; border-radius: var(--radius-lg); }
+
+    /* Role tabs */
+    .role-tabs {
+        flex-direction: column;
+        width: 100%;
+        border-radius: var(--radius-lg);
+    }
     .role-tab { width: 100%; justify-content: center; }
-    .footer-grid { grid-template-columns: 1fr; }
+
+    /* Steps and Telemetry */
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .telemetry-grid { grid-template-columns: 1fr 1fr; }
+
+    /* Footer */
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 1.75rem; }
     .footer-bottom-inner { flex-direction: column; gap: 0.75rem; text-align: center; }
+}
+
+/* ── 600px: Large Phones / Small Tablets ─────────────────────────────────── */
+@media (max-width: 600px) {
+    /* Container padding adjustment */
+    .container { width: min(100% - 2rem, var(--max-width)); }
+
+    /* Navigation */
+    .nav-pill { padding: 0.4rem 0.65rem 0.4rem 1rem; }
+
+    /* Hero */
+    .hero-copy h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
+    .hero-reassurance { gap: 0.85rem; font-size: 0.8rem; }
+    .hero-actions .btn { width: 100%; justify-content: center; }
+    .hero-actions { flex-direction: column; }
+
+    /* Preview card internal */
+    .preview-stats-row { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .preview-stat-card strong { font-size: 1.1rem; }
+    .preview-stat-card span { font-size: 0.65rem; }
+    .preview-floating-badge { display: none; } /* Hide badge below 600px to prevent overflow */
+
+    /* Trust */
+    .trust-grid { grid-template-columns: 1fr 1fr; }
+    .metric-value { font-size: 1.8rem; }
+
+    /* Role panel */
+    .role-panel-content { padding: 1.5rem; }
+    .mockup-metric-row { grid-template-columns: 1fr; gap: 0.4rem; }
+
+    /* Mockup table overflow: allow horizontal scroll inside card */
+    .mockup-table { overflow-x: auto; }
+    .table-header, .table-row { min-width: 280px; }
+
+    /* Steps */
+    .steps-grid { grid-template-columns: 1fr; }
+
+    /* Telemetry */
+    .telemetry-grid { grid-template-columns: 1fr; }
+
+    /* Pricing — override minmax to allow single-column on small screens */
+    .pricing-grid { grid-template-columns: 1fr; }
+
+    /* Footer */
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-brand-col { margin-bottom: 0.5rem; }
+
+    /* FAQ */
+    .faq-question { font-size: 0.95rem; }
+}
+
+/* ── 480px: Common Android phones ────────────────────────────────────────── */
+@media (max-width: 480px) {
+    /* Container */
+    .container { width: min(100% - 1.5rem, var(--max-width)); }
+
+    /* Typography */
+    .section-head h2 { font-size: clamp(1.6rem, 6vw, 2rem); }
+    .hero-copy h1 { font-size: clamp(1.85rem, 8vw, 2.5rem); }
+    .hero-lede { font-size: 1rem; }
+
+    /* Navigation */
+    .btn-nav-cta { padding: 0.5rem 0.9rem; font-size: 0.82rem; }
+    .brand-logo { height: 32px; }
+
+    /* Role switcher — tighter */
+    .role-tabs { padding: 0.3rem; }
+    .role-tab { padding: 0.55rem 1rem; font-size: 0.84rem; }
+
+    /* Roles panel */
+    .role-panel-content { padding: 1.25rem; border-radius: var(--radius-lg); }
+    .role-panel-text h3 { font-size: 1.35rem; }
+    .role-feature-list { font-size: 0.87rem; }
+
+    /* Deep dive visual cards */
+    .deep-dive-visual { max-width: 100%; }
+    .studio-card-preview, .learner-card-preview, .admin-card-preview {
+        padding: 1.25rem;
+        border-radius: var(--radius-lg);
+    }
+    .classroom-player-box { height: 120px; }
+    .grading-drawer-mini { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+
+    /* Trust */
+    .trust-grid { grid-template-columns: 1fr; }
+
+    /* Bento code snippet */
+    .bento-code-snippet code { font-size: 0.7rem; }
+
+    /* Plan cards */
+    .plan-card { padding: 1.6rem 1.25rem; }
+    .price-amount { font-size: 2.2rem; }
+    .popular-badge-pill, .enterprise-badge-pill { font-size: 0.65rem; padding: 0.25rem 0.75rem; }
+
+    /* CTA */
+    .cta-actions { flex-direction: column; }
+    .cta-actions .btn { width: 100%; justify-content: center; }
+    .cta-banner-card { padding: 2.5rem 1.25rem; }
+
+    /* Footer */
+    .footer { padding: 3rem 0 1.5rem; }
+    .footer-grid { gap: 1.25rem; }
+}
+
+/* ── 360px: Small Android phones ─────────────────────────────────────────── */
+@media (max-width: 360px) {
+    .container { width: min(100% - 1rem, var(--max-width)); }
+
+    /* Navigation — keep things tight */
+    .nav-pill { padding: 0.35rem 0.5rem 0.35rem 0.85rem; }
+    .btn-nav-cta { padding: 0.45rem 0.75rem; font-size: 0.78rem; }
+    .brand-logo { height: 28px; }
+
+    /* Hero */
+    .hero { padding: 3rem 0 2.5rem; }
+    .hero-copy h1 { font-size: clamp(1.65rem, 9vw, 2rem); }
+    .hero-lede { font-size: 0.93rem; }
+    .hero-actions .btn { padding: 0.7rem 1.1rem; font-size: 0.9rem; }
+    .hero-reassurance { flex-direction: column; align-items: center; gap: 0.6rem; }
+
+    /* Preview card */
+    .preview-glass-card { padding: 1.1rem; }
+    .preview-stats-row { gap: 0.35rem; }
+    .preview-stat-card { padding: 0.6rem 0.4rem; }
+    .preview-stat-card strong { font-size: 0.9rem; }
+
+    /* Roles */
+    .role-tab { padding: 0.5rem 0.65rem; font-size: 0.8rem; }
+    .tab-icon { font-size: 0.9rem; }
+
+    /* Cards */
+    .step-card, .bento-card, .telemetry-card, .trust-metric-card { padding: 1.35rem 1.1rem; }
+    .section-head { margin-bottom: 2rem; }
+    .plan-card { padding: 1.35rem 1rem; }
+    .price-amount { font-size: 2rem; }
 }
 
 /* ==========================================================================
@@ -1980,8 +2208,6 @@ html.js-ready .reveal-stagger > * {
 .reveal-stagger.revealed > *,
 html.js-ready .reveal-stagger.revealed > * {
     opacity: 1;
-    transform: translateY(0);
-}
     transform: translateY(0);
 }
 

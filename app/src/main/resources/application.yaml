@@ -1,5 +1,6 @@
 server:
-  port: ${PORT:8086}
+  host: localhost
+  port: 8086
   forward-headers-strategy: native
 
 spring:
@@ -8,18 +9,18 @@ spring:
   application:
     name: toplms
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/toplms_db}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:1234}
+    url: jdbc:postgresql://localhost:5432/toplms_db
+    username: postgres
+    password: 1234
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
 app:
-  host: "${server.host:localhost}"
-  port: "${server.port:8086}"
-  baseUrl: "${APP_BASE_URL:http://localhost:8086}"
+  host: "${server.host}"
+  port: "${server.port}"
+  baseUrl: "http://${server.host}:${server.port}"
   email: admin@gmail.com
   password: 123
   secretKey: "toplms_secure_super_secret_key_production_ready_2026"

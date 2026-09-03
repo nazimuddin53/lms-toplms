@@ -219,10 +219,12 @@
             });
         }, 100);
 
-        // 5. Subtle 3D Card Tilt on Hero Preview Card
+        // 5. Subtle 3D Card Tilt on Hero Preview Card (desktop/mouse only)
         const heroCard = document.getElementById('heroPreviewCard');
         const heroVisual = document.querySelector('.hero-visual');
-        if (heroCard && heroVisual) {
+        // Only enable tilt on devices with a fine pointer (mouse), not touch
+        const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+        if (heroCard && heroVisual && hasFinePointer) {
             heroVisual.addEventListener('mousemove', (e) => {
                 const rect = heroVisual.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
