@@ -30,7 +30,7 @@
                         branded workspaces, automated grading, and role-based intelligence.
                     </p>
                     <div class="hero-actions">
-                        <a class="btn btn-primary btn-lg" th:href="@{/signup}">
+                        <a class="btn btn-primary btn-lg" th:href="@{/register}">
                             <span>Launch Your Academy</span>
                             <svg class="icon-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -247,7 +247,7 @@
                                     <li><strong>Custom Subdomain &amp; Branding:</strong> Personalize your login portal,
                                         logos, and workspace metadata.</li>
                                 </ul>
-                                <a class="btn btn-primary" th:href="@{/signup}">Register Organization</a>
+                                <a class="btn btn-primary" th:href="@{/register}">Register Organization</a>
                             </div>
                             <div class="role-panel-visual">
                                 <div class="mockup-frame">
@@ -741,29 +741,34 @@
                 </div>
 
                 <div class="pricing-grid reveal-stagger">
-                    <!-- Dynamic Database Plans (FREE, GROWTH) -->
+                    <!-- Dynamic Database Plans (FREE, GROWTH, ENTERPRISE) -->
                     <div th:each="plan : ${plans}" class="plan-card"
-                        th:classappend="${plan.id == 'GROWTH'} ? 'plan-card-featured' : ''">
+                        th:classappend="${plan.id == 'GROWTH'} ? 'plan-card-featured' : (${plan.id == 'ENTERPRISE'} ? 'plan-card-enterprise' : '')">
 
                         <div th:if="${plan.id == 'GROWTH'}" class="popular-badge-pill">
                             Most Popular
                         </div>
+                        <div th:if="${plan.id == 'ENTERPRISE'}" class="enterprise-badge-pill">
+                            Large Institutions
+                        </div>
+
                         <div class="plan-header">
                             <div class="plan-title-row">
                                 <h3 th:text="${plan.name}">Growth Tier</h3>
                                 <span class="plan-code" th:text="${plan.id}">GROWTH</span>
                             </div>
                             <p class="plan-subtitle"
-                                th:text="${plan.id == 'FREE'} ? 'Ideal for independent educators and pilot courses.' : 'Designed for growing academies and specialized bootcamps.'">
+                                th:text="${plan.id == 'FREE'} ? 'Ideal for independent educators and pilot courses.' : (${plan.id == 'GROWTH'} ? 'Designed for growing academies and specialized bootcamps.' : 'Built for universities, polytechnics, and large training organizations.')">
                                 Plan subtitle description
                             </p>
 
                             <div class="plan-price-wrap">
                                 <span class="price-amount"
-                                    th:text="${plan.priceJSON != null && plan.priceJSON.containsKey('USD')} ? '$' + ${#numbers.formatDecimal(plan.priceJSON['USD'], 0, 0)} : '$0'">
+                                    th:text="${plan.priceJSON != null && plan.priceJSON.containsKey('USD') && plan.priceJSON['USD'] > 0} ? '$' + ${#numbers.formatDecimal(plan.priceJSON['USD'], 0, 0)} : (${plan.id == 'FREE'} ? '$0' : 'Custom')">
                                     $49
                                 </span>
-                                <span class="price-period">/month</span>
+                                <span class="price-period"
+                                    th:text="${plan.id == 'ENTERPRISE'} ? '/annual billing' : '/month'">/month</span>
                             </div>
                         </div>
 
@@ -771,13 +776,13 @@
                             <div class="limit-row">
                                 <span>Course Capacity</span>
                                 <strong
-                                    th:text="${plan.maxCourses == -1} ? 'Unlimited' : ${plan.maxCourses} + ' Courses'">20
+                                    th:text="${plan.maxCourses == -1} ? 'Unlimited Courses' : ${plan.maxCourses} + ' Courses'">20
                                     Courses</strong>
                             </div>
                             <div class="limit-row">
                                 <span>Student Roster</span>
                                 <strong
-                                    th:text="${plan.maxStudents == -1} ? 'Unlimited' : ${plan.maxStudents} + ' Students'">500
+                                    th:text="${plan.maxStudents == -1} ? 'Unlimited Students' : ${plan.maxStudents} + ' Students'">500
                                     Students</strong>
                             </div>
                         </div>
@@ -799,79 +804,18 @@
                                 <span class="module-check">✓</span>
                                 <span>Role-Based Access Controls</span>
                             </li>
+                            <li class="module-item" th:if="${plan.id == 'ENTERPRISE'}">
+                                <span class="module-check">✓</span>
+                                <span>24/7 Priority SLA &amp; Dedicated Support</span>
+                            </li>
                         </ul>
 
                         <div class="plan-cta-wrap">
                             <a th:href="@{/register(planId=${plan.id})}" class="btn btn-plan"
-                                th:classappend="${plan.id == 'GROWTH'} ? 'btn-primary' : 'btn-ghost'">
-                                <span th:text="${plan.id == 'FREE'} ? 'Start Free Workspace' : 'Launch Growth Plan'">Get
+                                th:classappend="${plan.id == 'GROWTH' || plan.id == 'ENTERPRISE'} ? 'btn-primary' : 'btn-ghost'">
+                                <span
+                                    th:text="${plan.id == 'FREE'} ? 'Start Free Workspace' : (${plan.id == 'GROWTH'} ? 'Launch Growth Plan' : 'Contact Sales & Launch')">Get
                                     Started</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- 3rd Card: Enterprise / Institutional Tier -->
-                    <div class="plan-card plan-card-enterprise">
-                        <div class="enterprise-badge-pill">
-                            Large Institutions
-                        </div>
-
-                        <div class="plan-header">
-                            <div class="plan-title-row">
-                                <h3>Enterprise</h3>
-                                <span class="plan-code">ENTERPRISE</span>
-                            </div>
-                            <p class="plan-subtitle">
-                                Built for universities, polytechnics, and large training organizations.
-                            </p>
-
-                            <div class="plan-price-wrap">
-                                <span class="price-amount">Custom</span>
-                                <span class="price-period">/annual billing</span>
-                            </div>
-                        </div>
-
-                        <div class="plan-limits-box">
-                            <div class="limit-row">
-                                <span>Course Capacity</span>
-                                <strong>Unlimited Courses</strong>
-                            </div>
-                            <div class="limit-row">
-                                <span>Student Roster</span>
-                                <strong>Unlimited Students</strong>
-                            </div>
-                        </div>
-
-                        <ul class="plan-module-list">
-                            <li class="module-item">
-                                <span class="module-check">✓</span>
-                                <span>Unlimited Courses &amp; Student Seats</span>
-                            </li>
-                            <li class="module-item">
-                                <span class="module-check">✓</span>
-                                <span>Dedicated Database &amp; Subdomain Isolation</span>
-                            </li>
-                            <li class="module-item">
-                                <span class="module-check">✓</span>
-                                <span>Custom Enterprise Single Sign-On (SAML / SSO)</span>
-                            </li>
-                            <li class="module-item">
-                                <span class="module-check">✓</span>
-                                <span>All Modules (Quizzes, Assignments, Certificates)</span>
-                            </li>
-                            <li class="module-item">
-                                <span class="module-check">✓</span>
-                                <span>Institutional Grading Audits &amp; Data Export</span>
-                            </li>
-                            <li class="module-item">
-                                <span class="module-check">✓</span>
-                                <span>24/7 Priority SLA &amp; Dedicated Account Manager</span>
-                            </li>
-                        </ul>
-
-                        <div class="plan-cta-wrap">
-                            <a th:href="@{/register(planId='ENTERPRISE')}" class="btn btn-plan btn-primary">
-                                Contact Sales &amp; Launch
                             </a>
                         </div>
                     </div>

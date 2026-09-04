@@ -48,6 +48,18 @@ public class SubscriptionPlanDataInitializer implements CommandLineRunner {
 
                 planRepository.save(new SubscriptionPlan("GROWTH", "Growth Tier", 20, 500, growthModules, growthPricing));
             }
+
+            // 3. Seed Enterprise Plan
+            if (!planRepository.existsById("ENTERPRISE")) {
+                Map<String, Boolean> enterpriseModules = Map.of(
+                        "quizzes", true,
+                        "assignments", true,
+                        "certificates", true
+                );
+                Map<String, Double> enterprisePricing = Map.of("USD", 199.00, "EUR", 185.00, "BDT", 22000.0);
+
+                planRepository.save(new SubscriptionPlan("ENTERPRISE", "Enterprise Tier", -1, -1, enterpriseModules, enterprisePricing));
+            }
             log.info("Done initializing subscription plans.");
         } catch (Exception e) {
             log.error("Critical failure during subscription plan space initialization context: ", e);

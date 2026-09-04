@@ -30,6 +30,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
@@ -54,7 +55,9 @@ public class AuthController {
 
     @Public
     @GetMapping("login")
-    public String login(Model model) {
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        @RequestParam(value = "logout", required = false) String logout,
+                        Model model) {
         TenantUserSignInDto tenantUserSignInDto = new TenantUserSignInDto();
 
         model.addAttribute("signInDto", tenantUserSignInDto);
@@ -62,6 +65,18 @@ public class AuthController {
             model.addAttribute("userType", "Administrator Profile");
         } else {
             model.addAttribute("userType", "User Profile");
+        }
+
+        if ("session_expired".equals(error)) {
+            model.addAttribute("errorMessage", "Your session has expired. Please sign in again.");
+        } else if ("invalid_tenant".equals(error)) {
+            model.addAttribute("errorMessage", "Invalid workspace or tenant not found.");
+        } else if ("unauthorized".equals(error)) {
+            model.addAttribute("errorMessage", "You are not authorized to access this resource.");
+        }
+
+        if ("success".equals(logout)) {
+            model.addAttribute("successMessage", "You have been signed out successfully.");
         }
 
         return "public/login";
@@ -74,63 +89,54 @@ public class AuthController {
 
         Tenant currentTenant = TenantContext.getCurrentTenant();
         if (TenantContext.getCurrentPageType().equals(LoadingPageType.MAIN)) {
+            model.addAttribute("userType", "Administrator Profile");
+
+            if (bindingResult.hasErrors()) {
+                return "public/login";
+            }
+
             Optional<User> userOpt = this.userService.findByEmail(dto.getEmail());
 
-            if (userOpt.isPresent()) {
+            if (userOpt.isEmpty() || !this.passwordEncoder.matches(dto.getPassword(), userOpt.get().getPassword())) {
                 model.addAttribute("errorMessage", "Invalid email or password");
+                return "public/login";
             }
 
             User user = userOpt.get();
 
-            if(userOpt.isPresent() && !this.passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-                model.addAttribute("errorMessage", "Invalid password");
-            }
-
-
-            if (bindingResult.hasErrors()) {
-                return "public/login";
-            }
             try {
                 String token = this.jwtProvider.generateToken(user.getEmail(), user.getRole().getName());
-
                 this.authenticationInterceptor.setTokenInCookie(response, token);
-                return "redirect:" + this.appHostProperties.getBaseUrl() +"/dashboard";
+                return "redirect:" + this.appHostProperties.getBaseUrl() + "/dashboard";
             } catch (IllegalArgumentException e) {
-                // 4. CRITICAL ERROR CATCH: Display custom exceptions (e.g., "Subdomain already taken!")
                 model.addAttribute("errorMessage", e.getMessage());
-
                 return "public/login";
             }
         } else {
-            Optional<TenantUser> tenantUser = this.tenantUserService.findByEmail(dto.getEmail());
-
-            if (tenantUser.isEmpty()) {
-                model.addAttribute("errorMessage", "Invalid email or password");
-            }
-
-            if(tenantUser.isPresent() && !this.passwordEncoder.matches(dto.getPassword(), tenantUser.get().getPassword())) {
-                model.addAttribute("errorMessage", "Invalid password");
-            }
-
+            model.addAttribute("userType", "User Profile");
 
             if (bindingResult.hasErrors()) {
                 return "public/login";
             }
 
-            try {
-                String token = this.jwtProvider.generateToken(tenantUser.get().getEmail(), tenantUser.get().getRole().getName(), currentTenant.getId());
+            Optional<TenantUser> tenantUserOpt = this.tenantUserService.findByEmail(dto.getEmail());
 
+            if (tenantUserOpt.isEmpty() || !this.passwordEncoder.matches(dto.getPassword(), tenantUserOpt.get().getPassword())) {
+                model.addAttribute("errorMessage", "Invalid email or password");
+                return "public/login";
+            }
+
+            TenantUser tenantUser = tenantUserOpt.get();
+
+            try {
+                String token = this.jwtProvider.generateToken(tenantUser.getEmail(), tenantUser.getRole().getName(), currentTenant.getId());
                 this.authenticationInterceptor.setTokenInCookie(response, token);
                 return "redirect:/dashboard";
             } catch (IllegalArgumentException e) {
-                // 4. CRITICAL ERROR CATCH: Display custom exceptions (e.g., "Subdomain already taken!")
                 model.addAttribute("errorMessage", e.getMessage());
-
                 return "public/login";
             }
         }
-
-
     }
 
     @Public
@@ -154,9 +160,10 @@ public class AuthController {
         if (currentTenant == null) {
             return "redirect:" + this.appHostProperties.getBaseUrl() + "/register";
         }
-        Optional<TenantUser> tenantUser = this.tenantUserService.findByEmail(dto.getEmail());
-        if (tenantUser.isPresent()) {
+        Optional<TenantUser> existingUser = this.tenantUserService.findByEmail(dto.getEmail());
+        if (existingUser.isPresent()) {
             model.addAttribute("errorMessage", "Email already in use");
+            return "tenant/public/signup";
         }
 
         if (bindingResult.hasErrors()) {
@@ -169,10 +176,11 @@ public class AuthController {
             TenantUser newUser = new TenantUser();
             newUser.setEmail(dto.getEmail());
             newUser.setName(dto.getName());
-            newUser.setRole(role.get());
+            role.ifPresent(newUser::setRole);
 
             this.tenantUserService.create(newUser, dto.getPassword());
-            String token = this.jwtProvider.generateToken(tenantUser.get().getEmail(), tenantUser.get().getPassword(), currentTenant.getId());
+            String roleName = newUser.getRole() != null ? newUser.getRole().getName() : RoleEnum.STUDENT.name();
+            String token = this.jwtProvider.generateToken(newUser.getEmail(), roleName, currentTenant.getId());
 
             this.authenticationInterceptor.setTokenInCookie(response, token);
             return "redirect:/dashboard";
