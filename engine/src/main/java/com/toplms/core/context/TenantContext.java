@@ -17,6 +17,11 @@ public final class TenantContext {
     public static Tenant getCurrentTenant() {
         return contextHolder.get();
     }
+
+    public static String getCurrentTenantId() {
+        Tenant tenant = contextHolder.get();
+        return tenant != null ? tenant.getId() : null;
+    }
     public static void setCurrenPageType(LoadingPageType pageType) {
         contextType.set(pageType);
     }
