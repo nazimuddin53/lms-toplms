@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Something went wrong</title>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+    <style>
+        .not-found-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1.25rem;
+        }
+        .not-found-code {
+            font-family: 'Plus Jakarta Sans', 'Geist', sans-serif;
+            font-size: clamp(4rem, 12vw, 7rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="not-found-screen">
+    <div style="max-width: 480px;">
+        <div class="pill-badge" style="margin-bottom: 1.5rem;">
+            <span class="pulse-dot"></span>
+            <span th:text="'Error ' + ${status}">Error 500</span>
+        </div>
+        <h1 class="not-found-code gradient-text" th:text="${status}">500</h1>
+        <h2 style="margin-bottom: 0.85rem;">Something went wrong</h2>
+        <p style="color: var(--color-text-muted); margin-bottom: 1.75rem;">
+            An unexpected error occurred while handling your request. Please try again.
+        </p>
+        <div class="hero-actions" style="justify-content: center;">
+            <a class="btn btn-primary btn-lg" th:href="@{/}">Go home</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

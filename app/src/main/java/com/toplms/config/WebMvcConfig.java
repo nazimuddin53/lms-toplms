@@ -20,9 +20,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
                 // Order matters! Resolve tenant context first, then handle auth check.
-                registry.addInterceptor(tenantInterceptor).addPathPatterns("/**");
+                // "/error" is Spring's internal forward target for BasicErrorController — excluded
+                // from both so an anonymous 404/500 renders the error page instead of being
+                // redirected to /login by AuthenticationInterceptor.
+                registry.addInterceptor(tenantInterceptor).addPathPatterns("/**").excludePathPatterns("/error");
                 registry.addInterceptor(authInterceptor)
                         .addPathPatterns("/**")
-                        .excludePathPatterns("/css/**", "/js/**", "/images/**", "/favicon.ico");
+                        .excludePathPatterns("/css/**", "/js/**", "/images/**", "/favicon.ico", "/error");
         }
 }
