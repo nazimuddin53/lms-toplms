@@ -23,14 +23,14 @@ public class StudentMenuJson {
                             "title", "Dashboard",
                             "icon", "dashboard-icon",
                             "path", "/dashboard",
-                            "roles", List.of("TENANT_ADMIN", "INSTRUCTOR", "STUDENT")
+                            "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT")
                     ),
 
                     // 2. Academic Management (Courses & Modules)
                     Map.of(
                             "title", "Academics",
                             "icon", "book-open-icon",
-                            "roles", List.of("TENANT_ADMIN", "INSTRUCTOR", "STUDENT"),
+                            "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT"),
                             "children", List.of(
                                     Map.of("title", "All Courses", "path", "/academics/courses"),
                                     Map.of("title", "My Enrollments", "path", "/academics/my-learning", "roles", List.of("STUDENT")),
@@ -43,10 +43,10 @@ public class StudentMenuJson {
                             "title", "Assessments",
                             "icon", "quiz-icon",
                             "moduleFlag", "quizzes",
-                            "roles", List.of("TENANT_ADMIN", "INSTRUCTOR", "STUDENT"),
+                            "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT"),
                             "children", List.of(
                                     Map.of("title", "Quizzes", "path", "/assessments/quizzes"),
-                                    Map.of("title", "AI Smart Grading", "path", "/assessments/ai-grading", "roles", List.of("TENANT_ADMIN", "INSTRUCTOR"))
+                                    Map.of("title", "AI Smart Grading", "path", "/assessments/ai-grading", "roles", List.of("TENANT_ADMIN", "TEACHER"))
                             )
                     ),
 
@@ -54,7 +54,7 @@ public class StudentMenuJson {
                     Map.of(
                             "title", "Users & Groups",
                             "icon", "users-icon",
-                            "roles", List.of("TENANT_ADMIN", "INSTRUCTOR"),
+                            "roles", List.of("TENANT_ADMIN", "TEACHER"),
                             "children", List.of(
                                     Map.of("title", "Students Directory", "path", "/users/students"),
                                     Map.of("title", "Instructors Staff", "path", "/users/instructors", "roles", List.of("TENANT_ADMIN"))
