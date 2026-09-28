@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-    <title th:text="${appName} + ' — Multi-tenant LMS for your business'">toplms — Multi-tenant LMS</title>
+    <title th:text="${appName} + ' — Courses &amp; Learning Portal'">toplms — Learning Portal</title>
     <link rel="stylesheet" th:href="@{/css/landing.css}">
 </head>
 <body>
@@ -17,100 +17,89 @@
     <main layout:fragment="tenantContent">
 
         <!-- ===== Hero ===== -->
-        <section class="hero">
+        <section class="hero" id="hero">
             <div class="container">
-                <span class="badge">Multi-tenant SaaS · Built on Spring Boot</span>
-                <h1>Launch your own <span class="grad">online academy</span></h1>
-                <p class="lede">
-                    <span th:text="${appName}">toplms</span> gives every business its own isolated,
-                    branded learning platform — courses, learners and AI-powered tutoring,
-                    live in under a minute.
-                </p>
-                <div class="hero-actions">
-                    <a class="btn btn-primary btn-lg" href="#how">See how it works</a>
-                    <a class="btn btn-ghost btn-lg" href="#features">Explore features</a>
-                </div>
-                <p class="hero-note">No credit card required · Free to start</p>
-            </div>
-        </section>
-
-        <!-- ===== Features ===== -->
-        <section class="section" id="features">
-            <div class="container">
-                <div class="section-head">
-                    <div class="eyebrow">Everything you need</div>
-                    <h2>One platform to run your training business</h2>
-                    <p>From tenant isolation to AI tutoring — the building blocks of a modern LMS, ready out of the box.</p>
-                </div>
-                <div class="features">
-                    <article class="feature">
-                        <div class="icon">🏢</div>
-                        <h3>Isolated workspaces</h3>
-                        <p>Every business is a separate tenant. Your data stays yours — cleanly partitioned from everyone else's.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">📚</div>
-                        <h3>Course management</h3>
-                        <p>Build courses, lessons and assessments with a structure that fits how you teach.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">🎓</div>
-                        <h3>Learner enrollment</h3>
-                        <p>Invite learners, manage enrollments and track progress through every course.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">🤖</div>
-                        <h3>AI tutoring</h3>
-                        <p>Claude-powered tutoring and automatic quiz generation, scoped and billed per tenant.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">🔒</div>
-                        <h3>Secure by default</h3>
-                        <p>BCrypt-hashed credentials and per-tenant access control built in from day one.</p>
-                    </article>
-                    <article class="feature">
-                        <div class="icon">⚡</div>
-                        <h3>Instant setup</h3>
-                        <p>Pick a name and a URL — your workspace is provisioned and live immediately.</p>
-                    </article>
+                <div class="hero-copy">
+                    <div class="pill-badge">
+                        <span class="pulse-dot"></span>
+                        <span th:text="${currentTenant?.subdomain} + '.toplms.com'">acme.toplms.com</span>
+                    </div>
+                    <h1>
+                        Welcome to <span class="gradient-text" th:text="${appName}">Acme Academy</span>
+                    </h1>
+                    <p class="hero-lede">
+                        <span th:text="${appName}">toplms</span> runs its courses, learners and instructors right
+                        here on TopLMS. Browse what's currently open for enrollment and jump in.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary btn-lg" href="#courses">Browse courses</a>
+                        <a class="btn btn-ghost btn-lg" th:href="@{/signup}">Create an account</a>
+                    </div>
+                    <div class="hero-reassurance">
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span th:text="${#lists.size(courses)} + ' course' + (${#lists.size(courses)} == 1 ? '' : 's') + ' available'">0 courses available</span>
+                        </span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Open enrollment</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== How it works ===== -->
-        <section class="section alt" id="how">
+        <!-- ===== Course catalog ===== -->
+        <section class="section" id="courses">
             <div class="container">
                 <div class="section-head">
-                    <div class="eyebrow">How it works</div>
-                    <h2>From signup to teaching in three steps</h2>
+                    <div class="eyebrow">Course catalog</div>
+                    <h2>What you can learn here</h2>
+                    <p>Every course currently published by <span th:text="${appName}">this academy</span>.</p>
                 </div>
-                <div class="steps">
-                    <article class="step feature">
-                        <div class="num">1</div>
-                        <h3>Create your workspace</h3>
-                        <p>Choose your business name and a URL like <code>toplms.app/acme</code>. You're live instantly.</p>
+
+                <div th:if="${courses != null and not #lists.isEmpty(courses)}" class="bento-grid">
+                    <article th:each="course : ${courses}" class="bento-card">
+                        <div class="bento-icon">📘</div>
+                        <h3 th:text="${course.title}">Course title</h3>
+                        <p th:text="${course.description}">Course description.</p>
                     </article>
-                    <article class="step feature">
-                        <div class="num">2</div>
-                        <h3>Add your content</h3>
-                        <p>Upload courses, invite instructors, and enroll your first learners.</p>
-                    </article>
-                    <article class="step feature">
-                        <div class="num">3</div>
-                        <h3>Start teaching</h3>
-                        <p>Learners sign in to your branded portal and start learning — with AI help on hand.</p>
-                    </article>
+                </div>
+
+                <div th:if="${courses == null or #lists.isEmpty(courses)}" class="trust-metric-card" style="max-width: 520px; margin: 0 auto; text-align: center;">
+                    <p class="metric-desc">No courses have been published yet. Check back soon.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== About ===== -->
+        <section class="section alt-bg" id="about">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">About</div>
+                    <h2 th:text="'About ' + ${appName}">About this academy</h2>
+                    <p>
+                        <span th:text="${appName}">This academy</span> is powered by TopLMS, a multi-tenant learning
+                        platform — every workspace gets its own branded portal, courses and learners, fully isolated
+                        from every other academy on the platform.
+                    </p>
                 </div>
             </div>
         </section>
 
         <!-- ===== Closing CTA ===== -->
-        <section class="cta-band" id="pricing">
+        <section class="cta-banner-section" id="join">
             <div class="container">
-                <div class="cta-card">
-                    <h2>Ready to launch your academy?</h2>
-                    <p th:text="'Start free on ' + ${appName} + ' — no credit card, no setup fees.'">Start free today.</p>
-                    <a class="btn btn-primary btn-lg" href="#features">Explore the platform</a>
+                <div class="cta-banner-card">
+                    <div class="cta-card-content">
+                        <span class="cta-pill">Ready to learn?</span>
+                        <h2 th:text="'Join ' + ${appName} + ' today'">Ready to start learning?</h2>
+                        <p>Create your account to enroll in courses and track your progress.</p>
+                        <div class="cta-actions">
+                            <a class="btn btn-cta-primary btn-lg" th:href="@{/signup}">
+                                <span>Sign up free</span>
+                            </a>
+                            <a class="btn btn-cta-ghost btn-lg" th:href="@{/login}">
+                                <span>Sign in</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

@@ -16,19 +16,27 @@
 <body>
 
 <!-- Shared Navigation Header Bar -->
-<!-- ===== Navigation ===== -->
-<header class="nav">
-    <div class="container nav-inner">
-        <a class="brand" th:href="@{/}">
-            <img class="brand-logo" th:src="@{/images/TopLMS-Logo.png}" alt="TopLMS logo">
-        </a>
-        <nav class="nav-links">
-            <a class="link" href="#features">Course</a>
-            <a class="link" href="#how">About Us</a>
+<header class="nav-wrapper">
+    <div class="container">
+        <nav class="nav-pill" aria-label="Main Navigation">
+            <a class="brand" th:href="@{/}">
+                <img class="brand-logo" th:src="@{/images/TopLMS-Logo.png}" alt="TopLMS logo">
+            </a>
+
+            <div class="nav-links" id="navLinks">
+                <a class="nav-link" th:href="@{/#courses}">Courses</a>
+                <a class="nav-link" th:href="@{/#about}">About Us</a>
+            </div>
+
+            <div class="nav-actions">
+                <a class="nav-login-link" th:href="@{/login}">Sign In</a>
+                <a class="btn btn-nav-cta" th:href="@{/signup}">Sign Up</a>
+                <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle navigation menu" type="button">
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </nav>
-        <div class="nav-actions">
-            <a class="btn btn-primary" th:href="@{/signup}">Sign Up</a>
-        </div>
     </div>
 </header>
 
@@ -42,34 +50,48 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
-            <div>
+            <div class="footer-brand-col">
                 <a class="brand" th:href="@{/}">
                     <img class="brand-logo" th:src="@{/images/TopLMS-Logo.png}" alt="TopLMS logo">
                 </a>
-                <p class="tagline" th:text="${tagline}">Multi-tenant Learning Management System</p>
+                <p class="footer-tagline" th:text="${tagline}">Multi-tenant Learning Management System</p>
             </div>
-            <div>
-                <h4>Product</h4>
+            <div class="footer-col">
+                <h4>Learn</h4>
                 <ul>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how">How it works</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#courses">Courses</a></li>
+                    <li><a href="#about">About Us</a></li>
                 </ul>
             </div>
-            <div>
-                <h4>Company</h4>
+            <div class="footer-col">
+                <h4>Account</h4>
                 <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a th:href="@{/login}">Sign In</a></li>
+                    <li><a th:href="@{/signup}">Sign Up</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; <span th:text="${currentYear ?: '2026'}">2026</span>
-            <span th:text="${appName ?: 'Toplms'}">toplms</span> · Built with Spring Boot &amp; Thymeleaf
+            <div class="footer-bottom-inner">
+                <p>&copy; <span th:text="${currentYear ?: '2026'}">2026</span>
+                    <span th:text="${appName ?: 'Toplms'}">toplms</span></p>
+                <p class="footer-tech">Built with <span>Spring Boot</span> &amp; <span>Thymeleaf</span></p>
+            </div>
         </div>
     </div>
 </footer>
+
+<script>
+    // Mobile navigation menu toggle — mirrors layout/layout.html's version.
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-links-open');
+            navToggle.classList.toggle('active');
+        });
+    }
+</script>
 
 </body>
 </html>

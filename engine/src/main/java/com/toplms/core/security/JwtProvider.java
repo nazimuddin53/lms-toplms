@@ -54,6 +54,7 @@ public class JwtProvider {
     public Claims parseToken(String token) {
         return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
     }
+
     public boolean isTokenValid(String token, String currentTenantId) {
         try {
             Claims claims = parseToken(token);

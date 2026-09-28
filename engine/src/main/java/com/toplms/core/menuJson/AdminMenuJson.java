@@ -27,7 +27,7 @@ public class AdminMenuJson {
 
                     // 2. Academic Management (Courses & Modules)
                     Map.of(
-                            "title", "Academics",
+                            "title", "Courses",
                             "icon", "book-open-icon",
                             "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT"),
                             "path", "/dashboard/courses"
@@ -38,33 +38,21 @@ public class AdminMenuJson {
                             "title", "Assessments",
                             "icon", "quiz-icon",
                             "moduleFlag", "quizzes",
-                            "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT"),
-                            "children", List.of(
-                                    Map.of("title", "Quizzes", "path", "/assessments/quizzes"),
-                                    Map.of("title", "AI Smart Grading", "path", "/assessments/ai-grading", "roles", List.of("TENANT_ADMIN", "TEACHER"))
-                            )
+                            "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT")
                     ),
 
                     // 4. User Workspace Management
                     Map.of(
-                            "title", "Users & Groups",
+                            "title", "Users",
                             "icon", "users-icon",
-                            "roles", List.of("TENANT_ADMIN", "TEACHER"),
-                            "children", List.of(
-                                    Map.of("title", "Students Directory", "path", "/users/students"),
-                                    Map.of("title", "Instructors Staff", "path", "/users/instructors", "roles", List.of("TENANT_ADMIN"))
-                            )
+                            "roles", List.of("TENANT_ADMIN", "TEACHER")
                     ),
 
                     // 5. Tenant Administration Panel
                     Map.of(
                             "title", "Settings & Billing",
                             "icon", "settings-icon",
-                            "roles", List.of("TENANT_ADMIN"),
-                            "children", List.of(
-                                    Map.of("title", "Workspace Customization", "path", "/settings/branding"),
-                                    Map.of("title", "Subscription & Invoices", "path", "/settings/billing")
-                            )
+                            "roles", List.of("TENANT_ADMIN")
                     )
             )
     );

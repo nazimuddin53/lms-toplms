@@ -8,6 +8,7 @@ import com.toplms.domain.base.Tenant;
 import com.toplms.master.subscriptionPlan.SubscriptionPlanRepository;
 import com.toplms.master.subscriptionPlan.SubscriptionPlanService;
 import com.toplms.master.tenant.TenantService;
+import com.toplms.tenant.course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,8 @@ public class HomeController {
     private SubscriptionPlanService subscriptionPlanService;
     @Autowired
     private TenantService tenantService;
+    @Autowired
+    private CourseService courseService;
 
     @Public
     @GetMapping("/")
@@ -44,8 +47,10 @@ public class HomeController {
         }
 
         model.addAttribute("appName", currentTenant.getCompanyName());
-        model.addAttribute("tagline", "Multi-tenant s Management System");
+        model.addAttribute("tagline", "Learn something new with " + currentTenant.getCompanyName());
         model.addAttribute("currentYear", Year.now().getValue());
+        model.addAttribute("currentTenant", currentTenant);
+        model.addAttribute("courses", courseService.getAllCourses());
         return "tenant/public/tenant-index";
     }
 

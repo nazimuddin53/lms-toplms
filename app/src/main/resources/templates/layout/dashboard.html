@@ -7,6 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Global SuperAdmin Terminal</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 20px;
+            line-height: 1;
+        }
+    </style>
 </head>
 <body class="bg-slate-900 font-sans text-slate-100 antialiased selection:bg-cyan-500 selection:text-slate-900">
 
@@ -19,22 +27,60 @@
         </div>
 
         <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            <a th:href="@{/dashboard}" class="flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition-all duration-150 shadow-md shadow-cyan-500/20">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                System Control Center
-            </a>
-            <a th:href="@{/superadmin/tenants}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
-                <svg class="w-5 h-5 mr-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0V11m0 0h4m-4 0m4 0v10m-4-10a2 2 0 012-2h2a2 2 0 012 2m0 0v10"/></svg>
-                Client Workspaces
-            </a>
-            <a th:href="@{/superadmin/plans}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
-                <svg class="w-5 h-5 mr-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                Subscription Packages
-            </a>
-            <a th:href="@{/superadmin/metrics}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
-                <svg class="w-5 h-5 mr-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                Hardware Diagnostics
-            </a>
+
+            <span class="px-4 pb-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Platform</span>
+
+            <th:block th:if="${sidebarMenus != null and sidebarMenus.sidebar != null}">
+                <th:block th:each="menuItem : ${sidebarMenus.sidebar}"
+                          th:if="${menuItem.get('roles') == null or menuItem.get('roles').contains(userType)}">
+
+                    <!-- Leaf item: a direct link -->
+                    <a th:if="${menuItem.get('children') == null}"
+                       th:href="@{${menuItem.get('path')}}"
+                       th:classappend="${menuItem.get('path') == '/dashboard'} ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100'"
+                       class="flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all duration-150">
+                        <span class="material-symbols-outlined mr-3" th:classappend="${menuItem.get('path') == '/dashboard'} ? '' : 'text-slate-500'"
+                              th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'dashboard'))">dashboard</span>
+                        <span th:text="${menuItem.get('title')}">Menu Item</span>
+                    </a>
+
+                    <!-- Section with children -->
+                    <th:block th:if="${menuItem.get('children') != null}">
+                        <div class="px-4 py-2 pt-3 flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+                            <span class="material-symbols-outlined" style="font-size: 14px;"
+                                  th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'folder'))">folder</span>
+                            <span th:text="${menuItem.get('title')}">Section</span>
+                        </div>
+                        <a th:each="child : ${menuItem.get('children')}"
+                           th:if="${child.get('roles') == null or child.get('roles').contains(userType)}"
+                           th:href="@{${child.get('path')}}"
+                           class="flex items-center pl-8 pr-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
+                            <span class="material-symbols-outlined mr-3" style="font-size: 16px;">chevron_right</span>
+                            <span th:text="${child.get('title')}">Child item</span>
+                        </a>
+                    </th:block>
+                </th:block>
+            </th:block>
+
+            <!-- Fallback: static core links when no menu_json is available for this role -->
+            <th:block th:if="${sidebarMenus == null or sidebarMenus.sidebar == null}">
+                <a th:href="@{/dashboard}" class="flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition-all duration-150 shadow-md shadow-cyan-500/20">
+                    <span class="material-symbols-outlined mr-3">dashboard</span>
+                    System Control Center
+                </a>
+                <a th:href="@{/superadmin/tenants}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
+                    <span class="material-symbols-outlined mr-3 text-slate-500">apartment</span>
+                    Client Workspaces
+                </a>
+                <a th:href="@{/superadmin/plans}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
+                    <span class="material-symbols-outlined mr-3 text-slate-500">workspace_premium</span>
+                    Subscription Packages
+                </a>
+                <a th:href="@{/superadmin/metrics}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
+                    <span class="material-symbols-outlined mr-3 text-slate-500">monitoring</span>
+                    Hardware Diagnostics
+                </a>
+            </th:block>
         </nav>
 
         <div class="p-4 border-t border-slate-800 bg-slate-950/50 flex items-center justify-between">
@@ -43,7 +89,7 @@
                 <p class="text-xs font-semibold text-slate-300">Root Infrastructure</p>
             </div>
             <a th:href="@{/logout}" class="p-2 rounded-md hover:bg-slate-900 text-slate-500 hover:text-rose-400 transition-colors" title="Kill Terminal Session">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <span class="material-symbols-outlined">logout</span>
             </a>
         </div>
     </aside>
@@ -51,17 +97,19 @@
     <div class="flex-1 pl-64 flex flex-col min-h-screen">
 
         <header class="h-16 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
-            <div class="flex items-center space-x-4">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60 uppercase tracking-wide">
-                        Platform Controller Active
-                    </span>
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60 uppercase tracking-wide">
+                    <span class="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    Platform Controller Active
+                </span>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="text-right">
-                    <p class="text-sm font-semibold text-slate-200" th:text="${#authentication?.name ?: 'Root Administrator'}">Root Operator</p>
+                    <p class="text-sm font-semibold text-slate-200" th:text="${user?.name ?: 'Root Administrator'}">Root Operator</p>
                     <p class="text-xs text-slate-500 font-mono" th:text="${userType ?: 'Administrator Profile'}">Administrator Profile</p>
                 </div>
-                <div class="h-9 w-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-cyan-400 font-mono font-bold text-sm shadow-inner">
+                <div class="h-9 w-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-cyan-400 font-mono font-bold text-sm shadow-inner"
+                     th:text="${#strings.toUpperCase(#strings.substring(user?.name ?: 'SU', 0, 1))}">
                     SU
                 </div>
             </div>

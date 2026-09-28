@@ -22,6 +22,14 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public AuthenticationInterceptor(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
+    // Spring's internal forward target for BasicErrorController/CustomErrorController.
+    // A truly unmapped route never reaches a HandlerMethod, so this interceptor never ran on
+    // the original failing request — this class's very first look at that request is during
+    // this forward. It must never redirect or 401 here (that would hijack an anonymous 404
+    // into a login redirect), but it should still populate UserContext when a valid token IS
+    // present, so the error page can render inside the right dashboard chrome.
+    private static final String ERROR_DISPATCH_PATH = "/error";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 1. If it's not a controller method request (e.g., static assets), let it pass
@@ -36,9 +44,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true; // Dynamic Bypass! No authentication required.
         }
 
+        boolean isErrorDispatch = ERROR_DISPATCH_PATH.equals(request.getRequestURI());
+
         String token = resolveToken(request);
         if (token == null) {
-            return handleInvalidAuthentication(request, response, "Missing authentication context credentials.");
+            return isErrorDispatch || handleInvalidAuthentication(request, response, "Missing authentication context credentials.");
         }
         try {
             // 3. Extract claims using JwtProvider
@@ -66,12 +76,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
             // Standard Workspace Users (TENANT_ADMIN, INSTRUCTOR, STUDENT)
             if (tokenTenantId == null) {
-                return sendUnauthorizedResponse(response, "Access Denied: Non-admin token is missing tenant context.");
+                return isErrorDispatch || sendUnauthorizedResponse(response, "Access Denied: Non-admin token is missing tenant context.");
             }
 
             // Boundary Cross Check: Ensure user matches current tenant boundary environment
             if (resolvedTenantId != null && !tokenTenantId.equals(resolvedTenantId)) {
-                return sendUnauthorizedResponse(response, "Access Denied: You do not belong to this tenant environment.");
+                return isErrorDispatch || sendUnauthorizedResponse(response, "Access Denied: You do not belong to this tenant environment.");
             }
 
             // Valid Tenant Occupant Context Creation
@@ -79,9 +89,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
 
         } catch (IllegalArgumentException e) {
-            return sendUnauthorizedResponse(response, "Access Denied: Invalid security clearance signature role.");
+            return isErrorDispatch || sendUnauthorizedResponse(response, "Access Denied: Invalid security clearance signature role.");
         } catch (Exception e) {
-            return sendUnauthorizedResponse(response, "Access Denied: Security signature token expired or invalid.");
+            return isErrorDispatch || sendUnauthorizedResponse(response, "Access Denied: Security signature token expired or invalid.");
         }
     }
 

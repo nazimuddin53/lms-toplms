@@ -30,39 +30,27 @@ public class RoleDataInitializer implements CommandLineRunner {
         @Override
         public void run(String... args) throws Exception {
             try {
-                String name ;
-
-                // 1. SuperAdmin Role
-                name = String.valueOf(RoleEnum.SUPER_ADMIN);
-                if (roleRepository.findByRoleName(name).isEmpty()) {
-                    Map<String, Object> menuJson = this.menuJson.getSuperadminMenuJson().getMenuJson();
-                    roleRepository.save(new Role(name, menuJson));
-                }
-
-                // 2. Admin Role
-                name = String.valueOf(RoleEnum.TENANT_ADMIN);
-                if (roleRepository.findByRoleName(String.valueOf(RoleEnum.TENANT_ADMIN)).isEmpty()) {
-                    Map<String, Object> menuJson = this.menuJson.getAdminMenuJson().getMenuJson();
-                    roleRepository.save(new Role(name, menuJson));
-                }
-
-                // 3. Student Role
-                name = String.valueOf(RoleEnum.STUDENT);
-                if (roleRepository.findByRoleName(name).isEmpty()) {
-                    Map<String, Object> menuJson = this.menuJson.getStudentMenuJson().getMenuJson();
-                    roleRepository.save(new Role(name, menuJson));
-                }
-
-                // 4. Teacher Role
-                name = String.valueOf(RoleEnum.TEACHER);
-                if (roleRepository.findByRoleName(name).isEmpty()) {
-                    Map<String, Object> menuJson = this.menuJson.getTeacherMenuJson().getMenuJson();
-                    roleRepository.save(new Role(name, menuJson));
-                }
+                upsertRoleMenu(RoleEnum.SUPER_ADMIN, this.menuJson.getSuperadminMenuJson().getMenuJson());
+                upsertRoleMenu(RoleEnum.TENANT_ADMIN, this.menuJson.getAdminMenuJson().getMenuJson());
+                upsertRoleMenu(RoleEnum.STUDENT, this.menuJson.getStudentMenuJson().getMenuJson());
+                upsertRoleMenu(RoleEnum.TEACHER, this.menuJson.getTeacherMenuJson().getMenuJson());
                 log.info("Roles seed");
             } catch (Exception e) {
                 log.error("Critical failure during roles space initialization context: ", e);
                 throw new RuntimeException("Workspace bootstrapping failed", e);
+            }
+        }
+
+        // The *MenuJson beans are the single source of truth for sidebar content, so re-sync
+        // menu_json on every startup instead of only inserting it the first time the role is created.
+        private void upsertRoleMenu(RoleEnum role, Map<String, Object> menuJson) {
+            String name = String.valueOf(role);
+            Role existing = roleRepository.findByRoleName(name).orElse(null);
+            if (existing == null) {
+                roleRepository.save(new Role(name, menuJson));
+            } else if (!menuJson.equals(existing.getMenuJson())) {
+                existing.setMenuJson(menuJson);
+                roleRepository.save(existing);
             }
         }
 }

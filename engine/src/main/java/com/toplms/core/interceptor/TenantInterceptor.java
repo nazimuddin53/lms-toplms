@@ -50,6 +50,13 @@ public class TenantInterceptor implements HandlerInterceptor {
         Optional<Tenant> tenantIdOpt = resolveTenantFromDomain(host);
         TenantContext.setCurrenPageType(LoadingPageType.TENANT);
         if (tenantIdOpt == null || tenantIdOpt.isEmpty()) {
+            // "/error" is Spring's internal forward for CustomErrorController. A truly unmapped
+            // route never reaches a handler, so this is this interceptor's first (and only)
+            // look at the failing request — never 400 it here, or an anonymous visitor on a
+            // stale/unresolvable subdomain would get a raw text response instead of a 404 page.
+            if ("/error".equals(request.getRequestURI())) {
+                return true;
+            }
 
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Could not map the domain '" + serverName + "' to a valid tenant.");
