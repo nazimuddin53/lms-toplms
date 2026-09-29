@@ -63,7 +63,19 @@ public class TenantInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        TenantContext.setCurrentTenant(tenantIdOpt.get());
+        Tenant tenant = tenantIdOpt.get();
+
+        // A SuperAdmin can flip Tenant.active off (see SuperAdminTenantController), and this is
+        // the one place all requests for a tenant subdomain funnel through — enforcing it here
+        // is what actually makes "suspend" do something, instead of just flipping a DB column
+        // nothing reads.
+        if (!tenant.isActive() && !"/error".equals(request.getRequestURI())) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("This workspace has been suspended. Contact your platform administrator.");
+            return false;
+        }
+
+        TenantContext.setCurrentTenant(tenant);
         return true;
     }
 
