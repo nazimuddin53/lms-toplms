@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/dashboard}">
+
+<head>
+    <title>Create Plan</title>
+</head>
+
+<body>
+
+<div layout:fragment="superadminContent" class="max-w-2xl space-y-6">
+
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900">Create Subscription Plan</h1>
+        <p class="mt-1 text-sm text-slate-500">Define a new plan tenants can be placed on.</p>
+    </div>
+
+    <div th:if="${param.error != null and param.error[0] == 'duplicate_id'}"
+         class="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        That plan code is already in use — pick a different one.
+    </div>
+
+    <div class="rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm">
+        <form th:action="@{/superadmin/plans}" th:object="${plan}" method="post" class="space-y-5">
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Plan Code</label>
+                <input type="text" th:field="*{id}" placeholder="e.g. STARTER" required
+                       class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                <p class="mt-1 text-xs text-slate-400">Short, uppercase, immutable once created.</p>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Display Name</label>
+                <input type="text" th:field="*{name}" placeholder="e.g. Starter Tier" required
+                       class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Max Courses</label>
+                    <input type="number" th:field="*{maxCourses}" min="-1" required
+                           class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <p class="mt-1 text-xs text-slate-400">-1 = unlimited</p>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Max Students</label>
+                    <input type="number" th:field="*{maxStudents}" min="-1" required
+                           class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <p class="mt-1 text-xs text-slate-400">-1 = unlimited</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Price (USD / month)</label>
+                <input type="number" step="0.01" min="0" name="usdPrice" value="0.00"
+                       class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Modules</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="modules" value="quizzes" class="rounded border-slate-300 text-[#0d883c] focus:ring-emerald-200"> Quizzes
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="modules" value="assignments" class="rounded border-slate-300 text-[#0d883c] focus:ring-emerald-200"> Assignments
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="modules" value="certificates" class="rounded border-slate-300 text-[#0d883c] focus:ring-emerald-200"> Certificates
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <a th:href="@{/superadmin/plans}"
+                   class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="rounded-lg bg-[#0d883c] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#005843]">
+                    Create Plan
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
