@@ -2,6 +2,7 @@ package com.toplms.config;
 
 //import com.toplms.master.tenant.TenantService;
 import com.toplms.core.interceptor.AuthenticationInterceptor;
+import com.toplms.core.interceptor.SuperAdminAccessInterceptor;
 import com.toplms.core.interceptor.TenantInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -11,10 +12,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
         private final TenantInterceptor tenantInterceptor;
         private final AuthenticationInterceptor authInterceptor;
+        private final SuperAdminAccessInterceptor superAdminAccessInterceptor;
 
-        public WebMvcConfig(TenantInterceptor tenantInterceptor, AuthenticationInterceptor authInterceptor) {
+        public WebMvcConfig(TenantInterceptor tenantInterceptor, AuthenticationInterceptor authInterceptor,
+                             SuperAdminAccessInterceptor superAdminAccessInterceptor) {
                 this.tenantInterceptor = tenantInterceptor;
                 this.authInterceptor = authInterceptor;
+                this.superAdminAccessInterceptor = superAdminAccessInterceptor;
         }
 
         @Override
@@ -28,5 +32,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 registry.addInterceptor(authInterceptor)
                         .addPathPatterns("/**")
                         .excludePathPatterns("/css/**", "/js/**", "/images/**", "/favicon.ico");
+                // Registered after authInterceptor so UserContext is already populated by the
+                // time this runs — it only needs to check the role, not re-validate the token.
+                registry.addInterceptor(superAdminAccessInterceptor).addPathPatterns("/superadmin/**");
         }
 }
