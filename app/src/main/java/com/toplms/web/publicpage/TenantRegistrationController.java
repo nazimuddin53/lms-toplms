@@ -117,11 +117,6 @@ public class TenantRegistrationController {
         return finishRegistration(dto, model);
     }
 
-    /**
-     * No real card processing happens anywhere in this flow — the "payment" is provisioning
-     * itself succeeding. Shared by the free-plan path (skips the payment page) and the paid-plan
-     * path (after the fake payment form submits).
-     */
     private String finishRegistration(TenantRegistrationDto dto, Model model) {
         try {
             registrationService.createNewTenantAndAdmin(dto);
@@ -140,9 +135,7 @@ public class TenantRegistrationController {
                 && plan.getPriceJSON().get("USD") > 0;
     }
 
-    /**
-     * Helper method to keep UI state consistent across page reload refreshes
-     */
+
     private void populateFallbackDataIfNeeded(TenantRegistrationDto dto, Model model) {
         if (dto.getPlanId() == null || dto.getPlanId().trim().isEmpty()) {
             model.addAttribute("showPlanSelector", true);

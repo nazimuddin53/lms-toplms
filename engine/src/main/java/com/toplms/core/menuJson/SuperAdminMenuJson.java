@@ -40,15 +40,15 @@ public class SuperAdminMenuJson {
                             "icon", "plans-icon",
                             "path", "/superadmin/plans",
                             "roles", List.of("SUPER_ADMIN")
-                    ),
+                    )
 
                     // 4. Platform-wide metrics
-                    Map.of(
-                            "title", "Hardware Diagnostics",
-                            "icon", "metrics-icon",
-                            "path", "/superadmin/metrics",
-                            "roles", List.of("SUPER_ADMIN")
-                    )
+//                    Map.of(
+//                            "title", "Hardware Diagnostics",
+//                            "icon", "metrics-icon",
+//                            "path", "/superadmin/metrics",
+//                            "roles", List.of("SUPER_ADMIN")
+//                    )
             )
     );
 
