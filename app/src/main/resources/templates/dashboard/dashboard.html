@@ -2,16 +2,52 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/dashboard}"> <head>
+      layout:decorate="~{layout/dashboard}">
+<head>
     <title>Workspace Home</title>
 </head>
 <body>
 
-<div layout:fragment="dashboardContent">
-    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-        <h1 class="text-2xl font-bold text-slate-900 mb-2">Welcome Back!</h1>
-        <p class="text-slate-500">Your SaaS application layer metrics are fully operational.</p>
-    </div>
+<div layout:fragment="superadminContent" class="space-y-6 ">
+
+    <!-- Welcome banner -->
+    <section class="relative overflow-hidden rounded-2xl p-8 text-white shadow-sm" style="background: linear-gradient(120deg, #003b2d, #0d883c);">
+        <div class="relative z-10">
+            <p class="text-sm font-medium text-emerald-100">Root Infrastructure</p>
+            <h1 class="mt-1 text-3xl font-bold tracking-tight">Welcome back, <span th:text="${user?.name ?: 'Administrator'}">Admin</span></h1>
+            <p class="mt-2 max-w-xl text-emerald-50">Everything's operational. Manage tenant workspaces and subscription plans from here.</p>
+        </div>
+        <div class="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/10"></div>
+        <div class="pointer-events-none absolute -bottom-16 right-24 h-40 w-40 rounded-full bg-white/5"></div>
+    </section>
+
+    <!-- Quick access -->
+    <section class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <a th:href="@{/superadmin/tenants}"
+           class="group rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm transition hover:shadow-md hover:border-emerald-300">
+            <div class="flex items-center justify-between">
+                <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-50 text-[#0d883c]">
+                    <span class="material-symbols-outlined">apartment</span>
+                </span>
+                <span class="material-symbols-outlined text-slate-300 group-hover:text-[#0d883c] transition-colors">arrow_forward</span>
+            </div>
+            <p class="mt-4 text-lg font-semibold text-slate-900">Client Workspaces</p>
+            <p class="mt-1 text-sm text-slate-500">View every tenant, usage stats, and suspend or reassign plans.</p>
+        </a>
+
+        <a th:href="@{/superadmin/plans}"
+           class="group rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm transition hover:shadow-md hover:border-emerald-300">
+            <div class="flex items-center justify-between">
+                <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-50 text-[#0d883c]">
+                    <span class="material-symbols-outlined">workspace_premium</span>
+                </span>
+                <span class="material-symbols-outlined text-slate-300 group-hover:text-[#0d883c] transition-colors">arrow_forward</span>
+            </div>
+            <p class="mt-4 text-lg font-semibold text-slate-900">Subscription Packages</p>
+            <p class="mt-1 text-sm text-slate-500">Create and edit plans — pricing, limits, and enabled modules.</p>
+        </a>
+    </section>
+
 </div>
 
 </body>
