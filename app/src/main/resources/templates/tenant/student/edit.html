@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{tenant/layout/dashboard}">
+
+<head>
+  <title>Edit Student</title>
+</head>
+
+<body>
+
+<div layout:fragment="dashboardContentTenant"
+     class="space-y-8 p-8">
+
+  <!-- Page Header -->
+  <section>
+    <p class="text-sm font-medium text-emerald-600">
+      Student Management
+    </p>
+
+    <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+      Edit Student
+    </h1>
+
+    <p class="mt-1 text-sm text-slate-500">
+      Update the student's information.
+    </p>
+  </section>
+
+
+  <!-- Edit Form -->
+  <section class="max-w-3xl">
+
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+
+      <div class="border-b border-slate-100 px-6 py-5">
+
+        <div class="flex items-center gap-3">
+
+          <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+
+            <svg class="h-6 w-6"
+                 fill="none"
+                 stroke="currentColor"
+                 viewBox="0 0 24 24">
+
+              <path stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-7.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 7.5-7.5z">
+              </path>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <h2 class="text-base font-semibold text-slate-900">
+              Student Information
+            </h2>
+
+            <p class="text-sm text-slate-500">
+              Update the student's basic information.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Form -->
+
+      <form th:action="@{/dashboard/students/edit/{id}(id=${student.id})}"
+            th:object="${student}"
+            method="post"
+            class="space-y-6 p-6">
+
+
+        <!-- Name -->
+
+        <div>
+
+          <label for="name"
+                 class="mb-2 block text-sm font-medium text-slate-700">
+
+            Student Name
+
+          </label>
+
+          <input type="text"
+                 id="name"
+                 th:field="*{name}"
+                 required
+                 class="block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+
+        </div>
+
+
+        <!-- Email -->
+
+        <div>
+
+          <label for="email"
+                 class="mb-2 block text-sm font-medium text-slate-700">
+
+            Email Address
+
+          </label>
+
+          <input type="email"
+                 id="email"
+                 th:field="*{email}"
+                 required
+                 class="block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-6">
+
+          <a th:href="@{/dashboard/students}"
+             class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+
+            Cancel
+
+          </a>
+
+
+          <button type="submit"
+                  class="inline-flex items-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700">
+
+            Update Student
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+
+  <!-- Back -->
+
+  <div>
+
+    <a th:href="@{/dashboard}"
+       class="inline-flex items-center text-sm font-medium text-indigo-600 transition hover:text-indigo-700">
+
+      ← Back to Dashboard
+
+    </a>
+
+  </div>
+
+</div>
+
+</body>
+</html>

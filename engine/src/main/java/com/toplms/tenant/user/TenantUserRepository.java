@@ -9,8 +9,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TenantUserRepository extends JpaRepository<TenantUser, String> {
+public interface TenantUserRepository extends JpaRepository<TenantUser, Long> {
 
-    @Query("SELECT u FROM TenantUser u WHERE LOWER(u.email) = LOWER(:email) AND u.tenant.id = :tenantId")
-    public Optional<TenantUser> findByEmail(@Param("email") String email, @Param("tenantId") String tenantId);
+    @Query("""
+        SELECT u FROM TenantUser u
+        WHERE LOWER(u.email) = LOWER(:email)
+        AND u.tenant.id = :tenantId
+    """)
+    Optional<TenantUser> findByEmail(
+            @Param("email") String email,
+            @Param("tenantId") String tenantId
+    );
 }
