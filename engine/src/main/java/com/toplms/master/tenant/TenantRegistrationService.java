@@ -5,6 +5,7 @@ import com.toplms.domain.base.Role;
 import com.toplms.domain.base.SubscriptionPlan;
 import com.toplms.domain.base.Tenant;
 import com.toplms.domain.tenant.TenantUser;
+import com.toplms.master.payment.PaymentService;
 import com.toplms.master.subscriptionPlan.SubscriptionPlanService;
 import com.toplms.master.users.RoleService;
 import com.toplms.master.users.UserRepository;
@@ -26,14 +27,16 @@ public class TenantRegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final SubscriptionPlanService subscriptionPlanService;
     private final RoleService roleService;
+    private final PaymentService paymentService;
 
 
-    public TenantRegistrationService(TenantService tenantService, TenantUserService tenantUserService, PasswordEncoder passwordEncoder, SubscriptionPlanService subscriptionPlanService, RoleService roleService) {
+    public TenantRegistrationService(TenantService tenantService, TenantUserService tenantUserService, PasswordEncoder passwordEncoder, SubscriptionPlanService subscriptionPlanService, RoleService roleService, PaymentService paymentService) {
         this.tenantService = tenantService;
         this.tenantUserService = tenantUserService;
         this.passwordEncoder = passwordEncoder;
         this.subscriptionPlanService = subscriptionPlanService;
         this.roleService = roleService;
+        this.paymentService = paymentService;
     }
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createNewTenantAndAdmin(TenantRegistrationDto dto) {
@@ -86,6 +89,13 @@ public class TenantRegistrationService {
             admin.setPassword(passwordEncoder.encode(dto.getAdminPassword()));
             admin.setTenant(tenant); // Hard link user to this specific tenant workspace
             tenantUserService.create(admin, dto.getAdminPassword());
+
+            // 5. Record the (simulated) payment that funded this plan — even a $0.00 FREE
+            // signup gets one, so every tenant has a consistent billing history from day one.
+            SubscriptionPlan plan = subscriptionPlan.get();
+            double amount = plan.getPriceJSON() != null && plan.getPriceJSON().get("USD") != null
+                    ? plan.getPriceJSON().get("USD") : 0.0;
+            paymentService.recordPayment(tenant, plan, amount, "USD");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException (e.getMessage());
         }

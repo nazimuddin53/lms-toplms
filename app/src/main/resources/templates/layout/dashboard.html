@@ -16,19 +16,19 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 font-sans text-slate-100 antialiased selection:bg-cyan-500 selection:text-slate-900">
+<body class="bg-[#f7faf8] font-sans text-slate-800 antialiased selection:bg-emerald-100 selection:text-emerald-900">
 
 <div class="flex min-h-screen">
 
-    <aside class="w-64 bg-slate-950 flex flex-col fixed inset-y-0 left-0 z-20 shadow-2xl border-r border-slate-800">
-        <div class="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950">
-            <div class="h-3 w-3 rounded-full bg-cyan-400 animate-pulse mr-2.5"></div>
-            <span class="font-bold text-white tracking-widest text-sm uppercase">TopLMS <span class="text-cyan-400">Core</span></span>
+    <aside class="w-64 bg-white flex flex-col fixed inset-y-0 left-0 z-20 shadow-sm border-r border-[#e2ebe6]">
+        <div class="h-16 flex items-center px-6 border-b border-[#e2ebe6]">
+            <div class="h-3 w-3 rounded-full bg-[#0d883c] animate-pulse mr-2.5"></div>
+            <span class="font-bold text-[#003b2d] tracking-widest text-sm uppercase">TopLMS <span class="text-[#0d883c]">Core</span></span>
         </div>
 
         <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
 
-            <span class="px-4 pb-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Platform</span>
+            <span class="px-4 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Platform</span>
 
             <th:block th:if="${sidebarMenus != null and sidebarMenus.sidebar != null}">
                 <th:block th:each="menuItem : ${sidebarMenus.sidebar}"
@@ -37,16 +37,16 @@
                     <!-- Leaf item: a direct link -->
                     <a th:if="${menuItem.get('children') == null}"
                        th:href="@{${menuItem.get('path')}}"
-                       th:classappend="${menuItem.get('path') == '/dashboard'} ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100'"
+                       th:classappend="${menuItem.get('path') == '/dashboard'} ? 'bg-[#0d883c] text-white shadow-sm' : 'text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d]'"
                        class="flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all duration-150">
-                        <span class="material-symbols-outlined mr-3" th:classappend="${menuItem.get('path') == '/dashboard'} ? '' : 'text-slate-500'"
+                        <span class="material-symbols-outlined mr-3" th:classappend="${menuItem.get('path') == '/dashboard'} ? '' : 'text-slate-400'"
                               th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'dashboard'))">dashboard</span>
                         <span th:text="${menuItem.get('title')}">Menu Item</span>
                     </a>
 
                     <!-- Section with children -->
                     <th:block th:if="${menuItem.get('children') != null}">
-                        <div class="px-4 py-2 pt-3 flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+                        <div class="px-4 py-2 pt-3 flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                             <span class="material-symbols-outlined" style="font-size: 14px;"
                                   th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'folder'))">folder</span>
                             <span th:text="${menuItem.get('title')}">Section</span>
@@ -54,8 +54,8 @@
                         <a th:each="child : ${menuItem.get('children')}"
                            th:if="${child.get('roles') == null or child.get('roles').contains(userType)}"
                            th:href="@{${child.get('path')}}"
-                           class="flex items-center pl-8 pr-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
-                            <span class="material-symbols-outlined mr-3" style="font-size: 16px;">chevron_right</span>
+                           class="flex items-center pl-8 pr-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d] transition-all duration-150">
+                            <span class="material-symbols-outlined mr-3 text-slate-400" style="font-size: 16px;">chevron_right</span>
                             <span th:text="${child.get('title')}">Child item</span>
                         </a>
                     </th:block>
@@ -64,64 +64,67 @@
 
             <!-- Fallback: static core links when no menu_json is available for this role -->
             <th:block th:if="${sidebarMenus == null or sidebarMenus.sidebar == null}">
-                <a th:href="@{/dashboard}" class="flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition-all duration-150 shadow-md shadow-cyan-500/20">
+                <a th:href="@{/dashboard}" class="flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg bg-[#0d883c] text-white shadow-sm transition-all duration-150">
                     <span class="material-symbols-outlined mr-3">dashboard</span>
                     System Control Center
                 </a>
-                <a th:href="@{/superadmin/tenants}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
-                    <span class="material-symbols-outlined mr-3 text-slate-500">apartment</span>
+                <a th:href="@{/superadmin/tenants}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d] transition-all duration-150">
+                    <span class="material-symbols-outlined mr-3 text-slate-400">apartment</span>
                     Client Workspaces
                 </a>
-                <a th:href="@{/superadmin/plans}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
-                    <span class="material-symbols-outlined mr-3 text-slate-500">workspace_premium</span>
+                <a th:href="@{/superadmin/plans}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d] transition-all duration-150">
+                    <span class="material-symbols-outlined mr-3 text-slate-400">workspace_premium</span>
                     Subscription Packages
                 </a>
-                <a th:href="@{/superadmin/metrics}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all duration-150">
-                    <span class="material-symbols-outlined mr-3 text-slate-500">monitoring</span>
+                <a th:href="@{/superadmin/metrics}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d] transition-all duration-150">
+                    <span class="material-symbols-outlined mr-3 text-slate-400">monitoring</span>
                     Hardware Diagnostics
                 </a>
             </th:block>
         </nav>
 
-        <div class="p-4 border-t border-slate-800 bg-slate-950/50 flex items-center justify-between">
+        <div class="p-4 border-t border-[#e2ebe6] bg-[#f7faf8] flex items-center justify-between">
             <div>
-                <p class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Security Context</p>
-                <p class="text-xs font-semibold text-slate-300">Root Infrastructure</p>
+                <p class="text-[10px] font-bold text-[#0d883c] uppercase tracking-widest">Security Context</p>
+                <p class="text-xs font-semibold text-slate-600">Root Infrastructure</p>
             </div>
-            <a th:href="@{/logout}" class="p-2 rounded-md hover:bg-slate-900 text-slate-500 hover:text-rose-400 transition-colors" title="Kill Terminal Session">
+            <a th:href="@{/logout}" class="p-2 rounded-md hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors" title="Sign Out">
                 <span class="material-symbols-outlined">logout</span>
             </a>
         </div>
     </aside>
 
-    <div class="flex-1 pl-64 flex flex-col min-h-screen">
+    <div class="flex-1 pl-64 flex flex-col jutify min-h-screen">
 
-        <header class="h-16 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+        <header class="h-16 bg-white border-b border-[#e2ebe6] flex items-center justify-between px-8 sticky top-0 z-10">
             <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60 uppercase tracking-wide">
-                    <span class="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-[#0d883c] border border-emerald-200 uppercase tracking-wide">
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#0d883c] animate-pulse"></span>
                     Platform Controller Active
                 </span>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="text-right">
-                    <p class="text-sm font-semibold text-slate-200" th:text="${user?.name ?: 'Root Administrator'}">Root Operator</p>
-                    <p class="text-xs text-slate-500 font-mono" th:text="${userType ?: 'Administrator Profile'}">Administrator Profile</p>
+                    <p class="text-sm font-semibold text-slate-800" th:text="${user?.name ?: 'Root Administrator'}">Root Operator</p>
+                    <p class="text-xs text-slate-400 font-mono" th:text="${userType ?: 'Administrator Profile'}">Administrator Profile</p>
                 </div>
-                <div class="h-9 w-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-cyan-400 font-mono font-bold text-sm shadow-inner"
+                <div class="h-9 w-9 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[#0d883c] font-mono font-bold text-sm"
                      th:text="${#strings.toUpperCase(#strings.substring(user?.name ?: 'SU', 0, 1))}">
                     SU
                 </div>
             </div>
         </header>
 
-        <main class="flex-1 p-8 bg-slate-900" layout:fragment="superadminContent">
+        <main class="flex-1 p-8 bg-[#f7faf8] ">
+            <div  layout:fragment="superadminContent">
+
+            </div>
         </main>
 
-        <footer class="h-12 bg-slate-950 border-t border-slate-800 px-8 flex items-center justify-between text-xs text-slate-500 font-medium font-mono">
+        <footer class=" h-12 bg-white border-t border-[#e2ebe6] px-8 flex items-center justify-between text-xs text-slate-400 font-medium">
             <div>&copy; 2026 TopLMS Root Management Node v1.0.0.</div>
-            <div class="flex items-center space-x-2 text-slate-400">
-                <span class="h-2 w-2 rounded-full bg-emerald-500 inline-block shadow shadow-emerald-500/50"></span>
+            <div class="flex items-center space-x-2 text-slate-500">
+                <span class="h-2 w-2 rounded-full bg-[#0d883c] inline-block"></span>
                 <span>Cluster Sync Status: ONLINE</span>
             </div>
         </footer>

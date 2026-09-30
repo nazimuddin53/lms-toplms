@@ -2,6 +2,7 @@ package com.toplms.web.publicpage;
 
 import com.toplms.config.AppHostProperties;
 import com.toplms.core.enumType.LoadingPageType;
+import com.toplms.domain.base.SubscriptionPlan;
 import com.toplms.domain.base.Tenant;
 import com.toplms.master.subscriptionPlan.SubscriptionPlanService;
 import org.springframework.ui.Model;
@@ -14,6 +15,8 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 
@@ -55,7 +58,7 @@ public class TenantRegistrationController {
             registrationDto.setPlanId(planId);
             model.addAttribute("showPlanSelector", false);
             // Optionally fetch specific plan details to display as text info
-             model.addAttribute("selectedPlan", subscriptionPlanService.getById(planId));
+             model.addAttribute("selectedPlan", subscriptionPlanService.getById(planId).orElse(null));
         }
 
         model.addAttribute("registrationDto", registrationDto);
@@ -78,19 +81,61 @@ public class TenantRegistrationController {
             return "public/tenantRegister";
         }
 
+        Optional<SubscriptionPlan> planOpt = subscriptionPlanService.getById(dto.getPlanId());
+        if (planOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Selected plan was not found.");
+            populateFallbackDataIfNeeded(dto, model);
+            return "public/tenantRegister";
+        }
+
+        // FREE ($0) plans skip the payment step entirely and provision immediately, same as before.
+        if (!isPaidPlan(planOpt.get())) {
+            return finishRegistration(dto, model);
+        }
+
+        // Paid plan — collect a (simulated) payment before provisioning anything.
+        model.addAttribute("registrationDto", dto);
+        model.addAttribute("selectedPlan", planOpt.get());
+        return "public/tenantRegisterPayment";
+    }
+
+    @Public
+    @PostMapping("/complete")
+    public String completeRegistration(@Valid @ModelAttribute("registrationDto") TenantRegistrationDto dto,
+                                        BindingResult bindingResult, Model model) {
+        if (!TenantInterceptor.LANDING_PAGE_TYPE.equals(LoadingPageType.MAIN)) {
+            return "redirect:" + this.appHostProperties.getBaseUrl() + "/register";
+        }
+
+        // The fields carried forward as hidden inputs from the payment step were already
+        // validated once on the initial submit — if something's still wrong (e.g. the tampered
+        // request, or a race on the subdomain), safest is to just start over rather than guess.
+        if (bindingResult.hasErrors()) {
+            return "redirect:/register";
+        }
+
+        return finishRegistration(dto, model);
+    }
+
+    private String finishRegistration(TenantRegistrationDto dto, Model model) {
         try {
             registrationService.createNewTenantAndAdmin(dto);
             return "redirect:http://" + dto.getSubdomain() + "."+ this.appHostProperties.getHost() + ":"+ this.appHostProperties.getPort() + "/login";
         } catch (IllegalArgumentException e) {
-            // 4. CRITICAL ERROR CATCH: Display custom exceptions (e.g., "Subdomain already taken!")
+            // CRITICAL ERROR CATCH: Display custom exceptions (e.g., "Subdomain already taken!")
             model.addAttribute("errorMessage", e.getMessage());
             populateFallbackDataIfNeeded(dto, model);
             return "public/tenantRegister";
         }
     }
-    /**
-     * Helper method to keep UI state consistent across page reload refreshes
-     */
+
+    private boolean isPaidPlan(SubscriptionPlan plan) {
+        return plan.getPriceJSON() != null
+                && plan.getPriceJSON().get("USD") != null
+                && plan.getPriceJSON().get("USD") > 0;
+    }
+
+
     private void populateFallbackDataIfNeeded(TenantRegistrationDto dto, Model model) {
         if (dto.getPlanId() == null || dto.getPlanId().trim().isEmpty()) {
             model.addAttribute("showPlanSelector", true);
@@ -99,7 +144,7 @@ public class TenantRegistrationController {
             // User had submitted a dynamic plan from selection or URL parameter
             model.addAttribute("showPlanSelector", true);
             // We set true so the dropdown stays visible and retains their chosen selection
-             model.addAttribute("availablePlans", subscriptionPlanService.getById(dto.getPlanId()));
+             model.addAttribute("availablePlans", subscriptionPlanService.getAll());
         }
     }
 }

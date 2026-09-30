@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/dashboard}">
+
+<head>
+    <title>Edit Plan</title>
+</head>
+
+<body>
+
+<div layout:fragment="superadminContent" class="max-w-2xl space-y-6">
+
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900">Edit Subscription Plan</h1>
+        <p class="mt-1 text-sm text-slate-500" th:text="${plan.id}">GROWTH</p>
+    </div>
+
+    <div class="rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm">
+        <form th:action="@{/superadmin/plans/edit/{id}(id=${plan.id})}" th:object="${plan}" method="post" class="space-y-5">
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Plan Code</label>
+                <input type="text" th:value="${plan.id}" disabled
+                       class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-400">
+                <p class="mt-1 text-xs text-slate-400">Plan codes are immutable after creation.</p>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Display Name</label>
+                <input type="text" th:field="*{name}" required
+                       class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Max Courses</label>
+                    <input type="number" th:field="*{maxCourses}" min="-1" required
+                           class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <p class="mt-1 text-xs text-slate-400">-1 = unlimited</p>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Max Students</label>
+                    <input type="number" th:field="*{maxStudents}" min="-1" required
+                           class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <p class="mt-1 text-xs text-slate-400">-1 = unlimited</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Price (USD / month)</label>
+                <input type="number" step="0.01" min="0" name="usdPrice"
+                       th:value="${plan.priceJSON != null ? plan.priceJSON.get('USD') : null}"
+                       class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                <p class="mt-1 text-xs text-slate-400">Other currencies already on this plan (EUR, BDT, …) are kept as-is.</p>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Modules</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="modules" value="quizzes" class="rounded border-slate-300 text-[#0d883c] focus:ring-emerald-200"
+                               th:checked="${plan.modulesJSON != null and plan.modulesJSON.get('quizzes') == true}"> Quizzes
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="modules" value="assignments" class="rounded border-slate-300 text-[#0d883c] focus:ring-emerald-200"
+                               th:checked="${plan.modulesJSON != null and plan.modulesJSON.get('assignments') == true}"> Assignments
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="modules" value="certificates" class="rounded border-slate-300 text-[#0d883c] focus:ring-emerald-200"
+                               th:checked="${plan.modulesJSON != null and plan.modulesJSON.get('certificates') == true}"> Certificates
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <a th:href="@{/superadmin/plans}"
+                   class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="rounded-lg bg-[#0d883c] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#005843]">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

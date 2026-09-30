@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/dashboard}">
+
+<head>
+    <title th:text="${summary.tenant().companyName}">Tenant Detail</title>
+</head>
+
+<body>
+
+<div layout:fragment="superadminContent" class="space-y-6 max-w-4xl">
+
+    <div class="flex items-center justify-between">
+        <div>
+            <a th:href="@{/superadmin/tenants}" class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-[#0d883c] mb-2">
+                <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span> Client Workspaces
+            </a>
+            <h1 class="text-2xl font-bold text-slate-900" th:text="${summary.tenant().companyName}">Acme Academy</h1>
+            <p class="mt-1 text-sm text-slate-500 font-mono" th:text="${summary.tenant().subdomain} + '.toplms.com'">demo.toplms.com</p>
+        </div>
+        <span th:if="${summary.tenant().active}" class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active
+        </span>
+        <span th:unless="${summary.tenant().active}" class="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
+            <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Suspended
+        </span>
+    </div>
+
+    <!-- Usage stat tiles -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="rounded-xl border border-[#e2ebe6] bg-white p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Users</p>
+            <p class="mt-2 text-2xl font-bold text-slate-900">
+                <span th:text="${summary.userCount()}">0</span>
+                <span class="text-sm font-medium text-slate-400">
+                    / <span th:text="${summary.tenant().plan?.maxStudents == -1 ? 'Unlimited' : summary.tenant().plan?.maxStudents}">500</span>
+                </span>
+            </p>
+        </div>
+        <div class="rounded-xl border border-[#e2ebe6] bg-white p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Courses</p>
+            <p class="mt-2 text-2xl font-bold text-slate-900">
+                <span th:text="${summary.courseCount()}">0</span>
+                <span class="text-sm font-medium text-slate-400">
+                    / <span th:text="${summary.tenant().plan?.maxCourses == -1 ? 'Unlimited' : summary.tenant().plan?.maxCourses}">20</span>
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Workspace info -->
+    <div class="rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm">
+        <h2 class="text-sm font-semibold text-slate-700 mb-4">Workspace Info</h2>
+        <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2 text-sm">
+            <div>
+                <dt class="text-slate-400">Workspace Name</dt>
+                <dd class="text-slate-700" th:text="${summary.tenant().name}">Acme</dd>
+            </div>
+            <div>
+                <dt class="text-slate-400">Current Plan</dt>
+                <dd class="text-slate-700" th:text="${summary.tenant().plan?.name ?: summary.tenant().plan?.id}">GROWTH</dd>
+            </div>
+            <div>
+                <dt class="text-slate-400">Subscription Started</dt>
+                <dd class="text-slate-700" th:text="${summary.tenant().subscriptionStartedAt != null ? #temporals.format(summary.tenant().subscriptionStartedAt, 'dd MMM yyyy') : '—'}">01 Jan 2026</dd>
+            </div>
+            <div>
+                <dt class="text-slate-400">Subscription Ends</dt>
+                <dd class="text-slate-700" th:text="${summary.tenant().subscriptionEndsAt != null ? #temporals.format(summary.tenant().subscriptionEndsAt, 'dd MMM yyyy') : '—'}">01 Feb 2026</dd>
+            </div>
+        </dl>
+    </div>
+
+    <!-- Actions -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+        <div class="rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm">
+            <h2 class="text-sm font-semibold text-slate-700 mb-1">Workspace Access</h2>
+            <p class="text-xs text-slate-400 mb-4">Suspending blocks every user of this tenant from signing in.</p>
+            <form th:if="${summary.tenant().active}" th:action="@{/superadmin/tenants/{id}/suspend(id=${summary.tenant().id})}" method="post">
+                <button type="submit"
+                        onclick="return confirm('Suspend this workspace? All of its users will be locked out immediately.')"
+                        class="inline-flex items-center gap-2 rounded-lg bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-100 border border-rose-200">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">block</span> Suspend Workspace
+                </button>
+            </form>
+            <form th:unless="${summary.tenant().active}" th:action="@{/superadmin/tenants/{id}/activate(id=${summary.tenant().id})}" method="post">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-100 border border-emerald-200">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">check_circle</span> Reactivate Workspace
+                </button>
+            </form>
+        </div>
+
+        <div class="rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm">
+            <h2 class="text-sm font-semibold text-slate-700 mb-1">Change Plan</h2>
+            <p class="text-xs text-slate-400 mb-4">Superadmin override — applies immediately, no payment involved.</p>
+            <form th:action="@{/superadmin/tenants/{id}/plan(id=${summary.tenant().id})}" method="post" class="flex gap-2">
+                <select name="planId" class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <option th:each="plan : ${plans}"
+                            th:value="${plan.id}"
+                            th:text="${plan.name} + ' (' + ${plan.id} + ')'"
+                            th:selected="${plan.id == summary.tenant().plan?.id}">GROWTH</option>
+                </select>
+                <button type="submit"
+                        class="rounded-lg bg-[#0d883c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#005843]">
+                    Apply
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Payment history -->
+    <div class="rounded-xl border border-[#e2ebe6] bg-white shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-[#e2ebe6]">
+            <h2 class="text-sm font-semibold text-slate-700">Payment History</h2>
+            <p class="text-xs text-slate-400">Simulated payments recorded when this workspace was provisioned or moved to a paid plan.</p>
+        </div>
+        <table class="min-w-full divide-y divide-[#e2ebe6]">
+            <thead class="bg-[#f3faf5]">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Plan</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Amount</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Status</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-[#e2ebe6]">
+            <tr th:each="payment : ${payments}" class="hover:bg-[#f7faf8]">
+                <td class="px-6 py-3 text-sm text-slate-600" th:text="${#temporals.format(payment.createdAt, 'dd MMM yyyy, HH:mm')}">01 Jan 2026, 10:00</td>
+                <td class="px-6 py-3 text-sm text-slate-600" th:text="${payment.plan?.name ?: payment.plan?.id}">GROWTH</td>
+                <td class="px-6 py-3 text-sm font-semibold text-slate-800" th:text="'$' + ${#numbers.formatDecimal(payment.amount, 0, 2)} + ' ' + ${payment.currency}">$49.00 USD</td>
+                <td class="px-6 py-3">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                        <span th:text="${payment.status}">SUCCEEDED</span>
+                    </span>
+                </td>
+            </tr>
+            <tr th:if="${payments == null or #lists.isEmpty(payments)}">
+                <td colspan="4" class="px-6 py-10 text-center text-slate-400">No payments recorded yet.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

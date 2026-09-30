@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Payment — ' + (${appName} ?: 'TopLMS')">Payment — TopLMS</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+    <section class="auth-section">
+        <div class="hero-ambient-glow" aria-hidden="true"></div>
+
+        <div class="container auth-container">
+            <div class="auth-card-wrapper reveal-on-scroll" style="max-width: 480px;">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="pill-badge auth-badge">
+                            <span class="pulse-dot"></span>
+                            <span>Simulated Checkout · No Real Charge</span>
+                        </div>
+                        <h1 class="auth-title">Complete Your <span class="gradient-text">Payment</span></h1>
+                        <p class="auth-subtitle">This is a demo payment form — no card processor is contacted and no money moves.</p>
+                    </div>
+
+                    <!-- Order summary -->
+                    <div style="background: var(--color-mint-light); border: 1px solid var(--color-mint-border); border-radius: var(--radius-sm); padding: 1rem 1.15rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); margin-bottom: 0.2rem;">Selected Plan</p>
+                                <p style="font-weight: 700; color: var(--color-primary-dark);" th:text="${selectedPlan.name}">Growth Tier</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="font-size: 1.6rem; font-weight: 800; color: var(--color-primary-dark);"
+                                   th:text="'$' + ${#numbers.formatDecimal(selectedPlan.priceJSON.get('USD'), 0, 2)}">$49.00</p>
+                                <p style="font-size: 0.75rem; color: var(--color-text-muted);">per month</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/register/complete}" th:object="${registrationDto}" method="post" autocomplete="off" class="auth-form">
+
+                        <!-- Everything from the previous step travels forward as hidden fields —
+                             this page never touches the account/company data, only the fake card. -->
+                        <input type="hidden" th:field="*{name}" />
+                        <input type="hidden" th:field="*{companyName}" />
+                        <input type="hidden" th:field="*{subdomain}" />
+                        <input type="hidden" th:field="*{planId}" />
+                        <input type="hidden" th:field="*{adminEmail}" />
+                        <input type="hidden" th:field="*{adminPassword}" />
+
+                        <div class="form-group">
+                            <label for="cardName" class="form-label">Cardholder Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="cardName" placeholder="Dr. Sarah Jenkins" required class="form-input" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" required
+                                       maxlength="19" class="form-input" style="padding-left: 1rem;" />
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="cardExpiry" class="form-label">Expiry</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="cardExpiry" placeholder="MM/YY" required maxlength="5" class="form-input" style="padding-left: 1rem;" />
+                                </div>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="cardCvc" class="form-label">CVC</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="cardCvc" placeholder="123" required maxlength="4" class="form-input" style="padding-left: 1rem;" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg auth-submit-btn" style="margin-top: 1rem;">
+                            <span th:text="'Pay $' + ${#numbers.formatDecimal(selectedPlan.priceJSON.get('USD'), 0, 2)} + ' & Launch Academy'">Pay $49.00 &amp; Launch Academy</span>
+                        </button>
+
+                        <div class="auth-footer-meta">
+                            <a th:href="@{/register}" class="auth-link">← Edit registration details</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

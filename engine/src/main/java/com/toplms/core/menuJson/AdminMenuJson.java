@@ -35,18 +35,26 @@ public class AdminMenuJson {
 
                     // 3. Examination & Assessment (Gated by 'quizzes' module configuration)
                     Map.of(
-                            "title", "Assessments",
-                            "icon", "quiz-icon",
-                            "moduleFlag", "quizzes",
+                            "title", "Students",
+                            "icon", "users-icon",
+                            "path", "/dashboard/students",
                             "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT")
                     ),
 
-                    // 4. User Workspace Management
+                    // 3. Examination & Assessment (Gated by 'quizzes' module configuration)
                     Map.of(
-                            "title", "Users",
-                            "icon", "users-icon",
-                            "roles", List.of("TENANT_ADMIN", "TEACHER")
+                            "title", "Teachers",
+                            "icon", "quiz-icon",
+                            "path", "/dashboard/teachers",
+                            "roles", List.of("TENANT_ADMIN", "TEACHER", "STUDENT")
                     ),
+
+//                    // 4. User Workspace Management
+//                    Map.of(
+//                            "title", "Users",
+//                            "icon", "users-icon",
+//                            "roles", List.of("TENANT_ADMIN", "TEACHER")
+//                    ),
 
                     // 5. Tenant Administration Panel
                     Map.of(

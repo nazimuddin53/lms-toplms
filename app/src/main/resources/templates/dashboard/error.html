@@ -10,19 +10,19 @@
 
 <div layout:fragment="superadminContent" class="flex min-h-[70vh] items-center justify-center">
     <div class="max-w-md text-center">
-        <p class="text-6xl font-bold text-cyan-400 mb-4" th:text="${status}">404</p>
-        <h1 class="text-2xl font-bold text-white mb-2"
+        <p class="text-6xl font-bold text-[#0d883c] mb-4" th:text="${status}">404</p>
+        <h1 class="text-2xl font-bold text-slate-900 mb-2"
             th:text="${status == 404} ? 'This page isn\'t built yet' : 'Something went wrong'">
             This page isn't built yet
         </h1>
-        <p class="text-slate-400 mb-2" th:if="${status == 404}">
+        <p class="text-slate-500 mb-2" th:if="${status == 404}">
             <span th:if="${path != null}" th:text="${path}" class="font-mono">/path</span> doesn't exist — this feature may not be wired up yet.
         </p>
-        <p class="text-slate-400 mb-6" th:if="${status != 404}">
+        <p class="text-slate-500 mb-6" th:if="${status != 404}">
             An unexpected error occurred while loading this page. Please try again.
         </p>
         <a th:href="@{/dashboard}"
-           class="inline-flex items-center px-5 py-2.5 rounded-lg bg-cyan-500 text-slate-950 text-sm font-semibold hover:bg-cyan-400 transition-colors duration-150">
+           class="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#0d883c] text-white text-sm font-semibold hover:bg-[#005843] transition-colors duration-150">
             Back to Dashboard
         </a>
     </div>
