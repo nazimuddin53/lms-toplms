@@ -56,10 +56,12 @@ public class AdminMenuJson {
 //                            "roles", List.of("TENANT_ADMIN", "TEACHER")
 //                    ),
 
-                    // 5. Tenant Administration Panel
+                    // 5. Tenant Administration Panel. Without a "path" this rendered as a
+                    // dead link (th:href="@{null}"), so it now points at the billing page.
                     Map.of(
                             "title", "Settings & Billing",
                             "icon", "settings-icon",
+                            "path", "/dashboard/billing",
                             "roles", List.of("TENANT_ADMIN")
                     )
             )

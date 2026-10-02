@@ -40,7 +40,7 @@
                        th:classappend="${menuItem.get('path') == '/dashboard'} ? 'bg-[#0d883c] text-white shadow-sm' : 'text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d]'"
                        class="flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all duration-150">
                         <span class="material-symbols-outlined mr-3" th:classappend="${menuItem.get('path') == '/dashboard'} ? '' : 'text-slate-400'"
-                              th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'dashboard'))">dashboard</span>
+                              th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'payments-icon'} ? 'payments' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'dashboard')))">dashboard</span>
                         <span th:text="${menuItem.get('title')}">Menu Item</span>
                     </a>
 
@@ -48,7 +48,7 @@
                     <th:block th:if="${menuItem.get('children') != null}">
                         <div class="px-4 py-2 pt-3 flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                             <span class="material-symbols-outlined" style="font-size: 14px;"
-                                  th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'folder'))">folder</span>
+                                  th:text="${menuItem.get('icon') == 'tenants-icon'} ? 'apartment' : (${menuItem.get('icon') == 'plans-icon'} ? 'workspace_premium' : (${menuItem.get('icon') == 'payments-icon'} ? 'payments' : (${menuItem.get('icon') == 'metrics-icon'} ? 'monitoring' : 'folder')))">folder</span>
                             <span th:text="${menuItem.get('title')}">Section</span>
                         </div>
                         <a th:each="child : ${menuItem.get('children')}"
@@ -75,6 +75,10 @@
                 <a th:href="@{/superadmin/plans}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d] transition-all duration-150">
                     <span class="material-symbols-outlined mr-3 text-slate-400">workspace_premium</span>
                     Subscription Packages
+                </a>
+                <a th:href="@{/superadmin/payments}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d] transition-all duration-150">
+                    <span class="material-symbols-outlined mr-3 text-slate-400">payments</span>
+                    Payment Records
                 </a>
                 <a th:href="@{/superadmin/metrics}" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-[#f3faf5] hover:text-[#003b2d] transition-all duration-150">
                     <span class="material-symbols-outlined mr-3 text-slate-400">monitoring</span>

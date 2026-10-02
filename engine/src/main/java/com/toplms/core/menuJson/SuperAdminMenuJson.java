@@ -40,9 +40,18 @@ public class SuperAdminMenuJson {
                             "icon", "plans-icon",
                             "path", "/superadmin/plans",
                             "roles", List.of("SUPER_ADMIN")
+                    ),
+
+                    // 4. Cross-tenant billing history. Per-tenant payments also appear on the
+                    // tenant detail page; this is the platform-wide ledger plus edit/delete.
+                    Map.of(
+                            "title", "Payment Records",
+                            "icon", "payments-icon",
+                            "path", "/superadmin/payments",
+                            "roles", List.of("SUPER_ADMIN")
                     )
 
-                    // 4. Platform-wide metrics
+                    // 5. Platform-wide metrics
 //                    Map.of(
 //                            "title", "Hardware Diagnostics",
 //                            "icon", "metrics-icon",
