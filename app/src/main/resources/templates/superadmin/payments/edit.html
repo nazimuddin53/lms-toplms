@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/dashboard}">
+
+<head>
+    <title>Edit Payment</title>
+</head>
+
+<body>
+
+<div layout:fragment="superadminContent" class="max-w-2xl space-y-6">
+
+    <div>
+        <a th:href="@{/superadmin/payments/{id}(id=${payment.id})}" class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-[#0d883c] mb-2">
+            <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span> Payment Detail
+        </a>
+        <h1 class="text-2xl font-bold text-slate-900">Edit Payment Record</h1>
+        <p class="mt-1 text-sm text-slate-500 font-mono" th:text="'Ref #' + ${payment.id}">Ref #1</p>
+    </div>
+
+    <div th:if="${param.error != null and param.error[0] == 'invalid'}"
+         class="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        Couldn't save those changes — check the amount isn't negative and that the plan and status are valid.
+    </div>
+
+    <div class="rounded-xl border border-[#e2ebe6] bg-white p-6 shadow-sm">
+        <form th:action="@{/superadmin/payments/edit/{id}(id=${payment.id})}" method="post" class="space-y-5">
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Workspace</label>
+                <input type="text" th:value="${payment.tenant?.companyName}" disabled
+                       class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-400">
+                <p class="mt-1 text-xs text-slate-400">A payment belongs to the workspace that made it — that link is immutable.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Amount</label>
+                    <input type="number" step="0.01" min="0" name="amount" th:value="${payment.amount}" required
+                           class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Currency</label>
+                    <input type="text" name="currency" th:value="${payment.currency}" maxlength="10" required
+                           class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <p class="mt-1 text-xs text-slate-400">ISO code, e.g. USD, EUR, BDT.</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Plan Paid For</label>
+                <select name="planId"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <option th:each="plan : ${plans}"
+                            th:value="${plan.id}"
+                            th:text="${plan.name} + ' (' + ${plan.id} + ')'"
+                            th:selected="${plan.id == payment.plan?.id}">GROWTH</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Status</label>
+                <select name="status"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 focus:border-[#0d883c] focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <option th:each="status : ${statuses}"
+                            th:value="${status}"
+                            th:text="${status}"
+                            th:selected="${status == payment.status}">SUCCEEDED</option>
+                </select>
+                <p class="mt-1 text-xs text-slate-400">No real gateway is wired up yet, so this is a bookkeeping value only.</p>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Recorded At</label>
+                <input type="text" th:value="${#temporals.format(payment.createdAt, 'dd MMM yyyy, HH:mm')}" disabled
+                       class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-400">
+                <p class="mt-1 text-xs text-slate-400">Set once on insert — the entity marks this column non-updatable.</p>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <a th:href="@{/superadmin/payments/{id}(id=${payment.id})}"
+                   class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="rounded-lg bg-[#0d883c] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#005843]">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
